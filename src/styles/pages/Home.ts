@@ -2,12 +2,13 @@ import styled from 'styled-components';
 
 export const HomeStyle = styled.div`
 
-    width: 100vw;
     height: 100vh;
+    padding: 50px 20%;
     background: rgba(235, 240, 235, 1);
     background-image: url('/wave.svg');
     background-repeat: no-repeat;
     background-position: center bottom;
+    position: relative;
 
     h1 {
         color: ${props => props.theme.colors.primary};
@@ -39,8 +40,8 @@ export const HomeStyle = styled.div`
     .login-card {
         width: 40%;
         position: absolute;
-        right: 10%;
-        top: 25%;
+        right: 20%;
+        top: 30%;
         padding: 2% 3% 4% 3%;
         background: rgba(255, 255, 255, 0.3);
         border-radius: 20px;
@@ -53,7 +54,7 @@ export const HomeStyle = styled.div`
     h3 {
         font-size: 30px;
         text-align: center;
-        color: ${props => props.theme.colors.widgets};
+        color: ${props => props.theme.colors.primary};
     }
 
     .forms {
