@@ -4,7 +4,7 @@ import { HomeStyle } from '../styles/pages/Home';
 import { Button } from '../styles/components/Button.style';
 import Cabecalho from '../components/Cabecalho';
 import Rodape from '../components/Rodape';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 
 const Home: NextPage = () => {
