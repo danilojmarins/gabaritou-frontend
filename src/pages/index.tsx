@@ -6,6 +6,9 @@ import Cabecalho from '../components/Cabecalho';
 import Rodape from '../components/Rodape';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
+import Router from 'next/router';
+import { faEye } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Home: NextPage = () => {
 
@@ -16,7 +19,13 @@ const Home: NextPage = () => {
   const [signEmail, setSignEmail] = useState<string>('');
   const [signSenha, setSignSenha] = useState<string>('');
 
-  const { login } = useContext(AuthContext);
+  const [validPassword, setValidPassword] = useState<boolean>(true);
+
+  const { login, loginError, isAuthenticated } = useContext(AuthContext);
+
+  if (isAuthenticated) {
+    Router.push('/dashboard');
+  }
 
   const handleLogin = async () => {
     await login(loginEmail, loginSenha);
@@ -24,6 +33,14 @@ const Home: NextPage = () => {
 
   const handleSignIn = () => {
     console.log(signNome, signEmail, signSenha);
+  }
+
+  const passwordValidation = (senha: string) => {
+    if (senha.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)) {
+      setValidPassword(true);
+    } else {
+      setValidPassword(false);
+    }
   }
 
   return (
@@ -48,7 +65,12 @@ const Home: NextPage = () => {
               <label>Senha</label>
               <input type="password" onChange={(e) => setLoginSenha(e.target.value)}></input>
 
-              <Button className='btn' onClick={handleLogin}>Login</Button>
+              {loginError && <p className='error'>Email ou Senha Incorretos.</p>}
+
+              <Button className='btn' onClick={handleLogin}>
+                Login
+                <input type="submit" onSubmit={handleLogin} style={{display: "none"}}></input>
+              </Button>
             </form>
 
             <form>
@@ -59,9 +81,21 @@ const Home: NextPage = () => {
               <input type="email" onChange={(e) => setSignEmail(e.target.value)}></input>
 
               <label>Senha</label>
-              <input type="password" onChange={(e) => setSignSenha(e.target.value)}></input>
+              <input type="password" onChange={(e) => {setSignSenha(e.target.value); passwordValidation(e.target.value)}}></input>
 
-              <Button className='btn' onClick={handleSignIn}>Cadastro</Button>
+              {!validPassword && 
+                <>
+                  <p className='error-pass'>Senha deve conter ao menos 8 caracteres.</p>
+                  <p className='error-pass'>1 maiúsculo.</p>
+                  <p className='error-pass'>1 minúsculo.</p>
+                  <p className='error-pass'>1 numérico.</p>
+                </>
+              }
+
+              <Button className='btn' onClick={handleSignIn}>
+                Cadastro
+                <input type="submit" onSubmit={handleSignIn} style={{display: "none"}}></input>
+              </Button>
             </form>
           </div>
         </div>

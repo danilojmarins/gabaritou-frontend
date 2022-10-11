@@ -91,6 +91,16 @@ export const HomeStyle = styled.div`
         }
     }
 
+    .error {
+        font-size: 14px;
+        color: #FF0000;
+    }
+
+    .error-pass {
+        font-size: 12px;
+        color: #FF0000;
+    }
+
     .btn {
         margin: 10% auto 0 auto;
     }
