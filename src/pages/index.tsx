@@ -9,6 +9,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import Router from 'next/router';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
 
 const Home: NextPage = () => {
 
@@ -20,6 +21,7 @@ const Home: NextPage = () => {
   const [signSenha, setSignSenha] = useState<string>('');
 
   const [validPassword, setValidPassword] = useState<boolean>(true);
+  const [emailExists, setEmailExists] = useState<boolean>(false);
 
   const { login, loginError, isAuthenticated } = useContext(AuthContext);
 
@@ -31,8 +33,19 @@ const Home: NextPage = () => {
     await login(loginEmail, loginSenha);
   }
 
-  const handleSignIn = () => {
-    console.log(signNome, signEmail, signSenha);
+  const handleSignIn = async () => {
+    if (validPassword) {
+      await axios.post('http://localhost:5000/usuarios', {
+        nome: signNome,
+        email: signEmail,
+        senha: signSenha
+      })
+      .catch(function(err) {
+        if (err.response.status === 409) {
+          setEmailExists(true);
+        }
+      })
+    }
   }
 
   const passwordValidation = (senha: string) => {
@@ -79,6 +92,8 @@ const Home: NextPage = () => {
 
               <label>Email</label>
               <input type="email" onChange={(e) => setSignEmail(e.target.value)}></input>
+
+              {emailExists && <p className='error'>Email informado já está em uso.</p>}
 
               <label>Senha</label>
               <input type="password" onChange={(e) => {setSignSenha(e.target.value); passwordValidation(e.target.value)}}></input>

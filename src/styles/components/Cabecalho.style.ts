@@ -28,7 +28,7 @@ export const CabecalhoStyle = styled.div`
     }
 
     .icon {
-        width: 45px;
+        font-size: 45px;
         color: ${props => props.theme.colors.primary};
         margin-left: 20px;
         display: inline-block;

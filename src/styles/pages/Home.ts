@@ -94,6 +94,7 @@ export const HomeStyle = styled.div`
     .error {
         font-size: 14px;
         color: #FF0000;
+        margin-bottom: 10px;
     }
 
     .error-pass {
