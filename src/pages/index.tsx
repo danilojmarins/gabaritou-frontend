@@ -4,12 +4,13 @@ import { HomeStyle } from '../styles/pages/Home';
 import { Button } from '../styles/components/Button.style';
 import Cabecalho from '../components/Cabecalho';
 import Rodape from '../components/Rodape';
-import { useContext, useEffect, useState } from 'react';
+import React, { ChangeEvent, ChangeEventHandler, useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import Router from 'next/router';
-import { faEye } from '@fortawesome/free-regular-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
+import { Modal } from '../styles/components/Modal.style';
 
 const Home: NextPage = () => {
 
@@ -20,8 +21,12 @@ const Home: NextPage = () => {
   const [signEmail, setSignEmail] = useState<string>('');
   const [signSenha, setSignSenha] = useState<string>('');
 
-  const [validPassword, setValidPassword] = useState<boolean>(true);
+  const [validPassword, setValidPassword] = useState<string | null>(null);
+  const [validEmail, setValidEmail] = useState<string | null>(null);
+
   const [emailExists, setEmailExists] = useState<boolean>(false);
+  const [signError, setSignError] = useState<boolean>(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const { login, loginError, isAuthenticated } = useContext(AuthContext);
 
@@ -33,28 +38,57 @@ const Home: NextPage = () => {
     await login(loginEmail, loginSenha);
   }
 
-  const handleSignIn = async () => {
-    if (validPassword) {
-      await axios.post('http://localhost:5000/usuarios', {
-        nome: signNome,
-        email: signEmail,
-        senha: signSenha
-      })
-      .catch(function(err) {
-        if (err.response.status === 409) {
+  const handleSignIn = async (e:any) => {
+
+    e.preventDefault();
+
+    if (!validPassword && !validEmail) {
+      try {
+        await axios.post('http://localhost:5000/usuarios', {
+          nome: signNome,
+          email: signEmail,
+          senha: signSenha
+        });
+        setModalOpen(true);
+      }
+      catch(error: any) {
+        if(error.response.status === 409) {
           setEmailExists(true);
         }
-      })
+        else {
+          setSignError(true);
+        }
+      }
     }
   }
 
   const passwordValidation = (senha: string) => {
-    if (senha.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)) {
-      setValidPassword(true);
-    } else {
-      setValidPassword(false);
-    }
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(senha);
   }
+
+  const emailValidation = (email: string) => {
+    return /\S+@\S+\.\S+/.test(email);
+  }
+
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!emailValidation(event.target.value)) {
+      setValidEmail('Email inválido.');
+    } else {
+      setValidEmail(null);
+    }
+
+    setSignEmail(event.target.value);
+  };
+
+  const handleSenhaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!passwordValidation(event.target.value)) {
+      setValidPassword('Senha Inválida.');
+    } else {
+      setValidPassword(null);
+    }
+
+    setSignSenha(event.target.value);
+  };
 
   return (
     <>
@@ -86,19 +120,21 @@ const Home: NextPage = () => {
               </Button>
             </form>
 
-            <form>
+            <form onSubmit={(e) => handleSignIn(e)}>
               <label>Nome</label>
               <input type="text" onChange={(e) => setSignNome(e.target.value)}></input>
 
               <label>Email</label>
-              <input type="email" onChange={(e) => setSignEmail(e.target.value)}></input>
+              <input type="email" value={signEmail} onChange={handleEmailChange}></input>
 
-              {emailExists && <p className='error'>Email informado já está em uso.</p>}
+              {emailExists && <p className='error'>Email já está sendo usado.</p>}
+
+              {validEmail && <p className='error'>{validEmail}</p>}
 
               <label>Senha</label>
-              <input type="password" onChange={(e) => {setSignSenha(e.target.value); passwordValidation(e.target.value)}}></input>
+              <input type="password" onChange={handleSenhaChange}></input>
 
-              {!validPassword && 
+              {validPassword && 
                 <>
                   <p className='error-pass'>Senha deve conter ao menos 8 caracteres.</p>
                   <p className='error-pass'>1 maiúsculo.</p>
@@ -107,13 +143,22 @@ const Home: NextPage = () => {
                 </>
               }
 
-              <Button className='btn' onClick={handleSignIn}>
+              {signError && <p className='error'>Erro ao cadastrar.</p>}
+
+              <Button className='btn' onClick={(e) => handleSignIn(e)}>
                 Cadastro
-                <input type="submit" onSubmit={handleSignIn} style={{display: "none"}}></input>
+                <input type="submit" style={{display: "none"}}></input>
               </Button>
             </form>
           </div>
         </div>
+
+        {modalOpen && <Modal>
+          <h3>Confirme seu Email</h3>
+          <p>Um Email foi enviado para sua caixa de entrada.</p>
+          <p>Clique no link enviado no Email para confirmar seu cadastro.</p>
+          <button onClick={() => setModalOpen(false)}><FontAwesomeIcon icon={faXmark} className='close-icon' /></button>
+        </Modal>}
 
       </HomeStyle>
       <Rodape />
