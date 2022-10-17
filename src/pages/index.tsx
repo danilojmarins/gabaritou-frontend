@@ -21,12 +21,17 @@ const Home: NextPage = () => {
   const [signEmail, setSignEmail] = useState<string>('');
   const [signSenha, setSignSenha] = useState<string>('');
 
+  const [recuperaSenhaEmail, setRecuperaSenhaEmail] = useState<string>('');
+
   const [validPassword, setValidPassword] = useState<string | null>(null);
   const [validEmail, setValidEmail] = useState<string | null>(null);
+  const [validRecuperaSenhaEmail, setValidRecuperaSenhaEmail] = useState<string | null>(null);
 
   const [emailExists, setEmailExists] = useState<boolean>(false);
   const [signError, setSignError] = useState<boolean>(false);
+  const [recuperaSenhaError, setRecuperaSenhaError] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [modalRecuperaSenhaOpen, setModalRecuperaSenhaOpen] = useState<boolean>(false);
 
   const { login, loginError, isAuthenticated } = useContext(AuthContext);
 
@@ -62,6 +67,22 @@ const Home: NextPage = () => {
     }
   }
 
+  const handleRecuperaSenha = async (e:any) => {
+
+    e.preventDefault();
+
+    if (!validRecuperaSenhaEmail) {
+      try {
+        await axios.post('http://localhost:5000/usuarios/esqueceuSenha', {
+          email: recuperaSenhaEmail
+        });
+      }
+      catch(error: any) {
+        setRecuperaSenhaError(true);
+      }
+    }
+  }
+
   const passwordValidation = (senha: string) => {
     return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(senha);
   }
@@ -90,6 +111,16 @@ const Home: NextPage = () => {
     setSignSenha(event.target.value);
   };
 
+  const handleRecuperaSenhaEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!emailValidation(event.target.value)) {
+      setValidRecuperaSenhaEmail('Email inválido.');
+    } else {
+      setValidRecuperaSenhaEmail(null);
+    }
+
+    setRecuperaSenhaEmail(event.target.value);
+  }
+
   return (
     <>
       <Cabecalho />
@@ -113,6 +144,8 @@ const Home: NextPage = () => {
               <input type="password" onChange={(e) => setLoginSenha(e.target.value)}></input>
 
               {loginError && <p className='error'>Email ou Senha Incorretos.</p>}
+
+              <p className='error'><a href='' onClick={(e) => {e.preventDefault(); setModalRecuperaSenhaOpen(true)}}>Esqueceu sua senha?</a></p>
 
               <Button className='btn' onClick={handleLogin}>
                 Login
@@ -158,6 +191,25 @@ const Home: NextPage = () => {
           <p>Um Email foi enviado para sua caixa de entrada.</p>
           <p>Clique no link enviado no Email para confirmar seu cadastro.</p>
           <button onClick={() => setModalOpen(false)}><FontAwesomeIcon icon={faXmark} className='close-icon' /></button>
+        </Modal>}
+
+        {modalRecuperaSenhaOpen && <Modal>
+          <h3>Recupere sua Senha</h3>
+
+          <div className='input-email-wrapper'>
+            <label>Email</label>
+            <br></br>
+            <input type="email" value={recuperaSenhaEmail} onChange={handleRecuperaSenhaEmailChange}></input>
+            {validRecuperaSenhaEmail && <p className='error'>{validRecuperaSenhaEmail}</p>}
+            {recuperaSenhaError && <p className='error'>Erro ao enviar email de recuperação.</p>}
+          </div>
+
+          <Button className='btn' onClick={(e) => handleRecuperaSenha(e)}>
+            Enviar Email
+            <input type="submit" style={{display: "none"}}></input>
+          </Button>
+
+          <button onClick={() => setModalRecuperaSenhaOpen(false)}><FontAwesomeIcon icon={faXmark} className='close-icon' /></button>
         </Modal>}
 
       </HomeStyle>

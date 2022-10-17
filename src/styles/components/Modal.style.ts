@@ -12,6 +12,9 @@ export const Modal = styled.div`
     z-index: 10;
     border-radius: 8px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
 
     button {
         position: absolute;
@@ -20,6 +23,13 @@ export const Modal = styled.div`
         background-color: transparent;
         border: none;
         cursor: pointer;
+    }
+
+    .input-email-wrapper {
+        display: inline-block;
+        text-align: left;
+        position: relative;
+        top: 30px;
     }
 
     .close-icon {
