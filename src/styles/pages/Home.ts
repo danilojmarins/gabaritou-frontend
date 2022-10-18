@@ -91,6 +91,19 @@ export const HomeStyle = styled.div`
         }
     }
 
+    .pass-input {
+        display: flex;
+        align-items: center;
+    }
+
+    .pass-icon {
+        width: 22px;
+        position: relative;
+        bottom: 7px;
+        right: 35px;
+        cursor: pointer;
+    }
+
     .error {
         font-size: 14px;
         color: #FF0000;

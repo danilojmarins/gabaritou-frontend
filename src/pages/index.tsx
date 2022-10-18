@@ -4,10 +4,10 @@ import { HomeStyle } from '../styles/pages/Home';
 import { Button } from '../styles/components/Button.style';
 import Cabecalho from '../components/Cabecalho';
 import Rodape from '../components/Rodape';
-import React, { ChangeEvent, ChangeEventHandler, useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import Router from 'next/router';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faEye } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import { Modal } from '../styles/components/Modal.style';
@@ -32,6 +32,10 @@ const Home: NextPage = () => {
   const [recuperaSenhaError, setRecuperaSenhaError] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [modalRecuperaSenhaOpen, setModalRecuperaSenhaOpen] = useState<boolean>(false);
+  const [emailRecuperacaoEnviado, setEmailRecuperacaoEnviado] = useState<boolean>(false);
+
+  const [showLoginPass, setShowLoginPass] = useState<boolean>(false);
+  const [showSignPass, setShowSignPass] = useState<boolean>(false);
 
   const { login, loginError, isAuthenticated } = useContext(AuthContext);
 
@@ -76,6 +80,7 @@ const Home: NextPage = () => {
         await axios.post('http://localhost:5000/usuarios/esqueceuSenha', {
           email: recuperaSenhaEmail
         });
+        setEmailRecuperacaoEnviado(true);
       }
       catch(error: any) {
         setRecuperaSenhaError(true);
@@ -83,8 +88,12 @@ const Home: NextPage = () => {
     }
   }
 
+  const nomeValidation = (nome: string) => {
+    return /^.{6,}$/.test(nome);
+  }
+
   const passwordValidation = (senha: string) => {
-    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(senha);
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(senha);
   }
 
   const emailValidation = (email: string) => {
@@ -141,7 +150,10 @@ const Home: NextPage = () => {
               <input type="email" onChange={(e) => setLoginEmail(e.target.value)}></input>
 
               <label>Senha</label>
-              <input type="password" onChange={(e) => setLoginSenha(e.target.value)}></input>
+              <div className='pass-input'>
+                <input type={showLoginPass ? "text" : "password"} onChange={(e) => setLoginSenha(e.target.value)}></input>
+                <FontAwesomeIcon icon={faEye} className='pass-icon' onClick={() => setShowLoginPass(!showLoginPass)} />
+              </div>
 
               {loginError && <p className='error'>Email ou Senha Incorretos.</p>}
 
@@ -165,14 +177,16 @@ const Home: NextPage = () => {
               {validEmail && <p className='error'>{validEmail}</p>}
 
               <label>Senha</label>
-              <input type="password" onChange={handleSenhaChange}></input>
+              <div className='pass-input'>
+                <input type={showSignPass ? "text" : "password"} onChange={handleSenhaChange}></input>
+                <FontAwesomeIcon icon={faEye} className='pass-icon' onClick={() => setShowSignPass(!showSignPass)} />
+              </div>
 
               {validPassword && 
                 <>
-                  <p className='error-pass'>Senha deve conter ao menos 8 caracteres.</p>
-                  <p className='error-pass'>1 maiúsculo.</p>
-                  <p className='error-pass'>1 minúsculo.</p>
-                  <p className='error-pass'>1 numérico.</p>
+                  <p className='error-pass'>Senha deve conter ao menos 8 caracteres:</p>
+                  <p className='error-pass'>ao menos 1 maiúsculo, 1 minúsculo,</p>  
+                  <p className='error-pass'>1 numérico e 1 especial.</p>
                 </>
               }
 
@@ -194,20 +208,29 @@ const Home: NextPage = () => {
         </Modal>}
 
         {modalRecuperaSenhaOpen && <Modal>
-          <h3>Recupere sua Senha</h3>
+          {emailRecuperacaoEnviado ? 
+          <>
+            <h3>Email de Recuperação Enviado</h3>
+            <p>Um Email foi enviado para sua caixa de entrada.</p>
+            <p>Clique no link enviado no Email para redefinir sua senha.</p>
+          </>
+          :
+          <>
+            <h3>Recupere sua Senha</h3>
 
-          <div className='input-email-wrapper'>
-            <label>Email</label>
-            <br></br>
-            <input type="email" value={recuperaSenhaEmail} onChange={handleRecuperaSenhaEmailChange}></input>
-            {validRecuperaSenhaEmail && <p className='error'>{validRecuperaSenhaEmail}</p>}
-            {recuperaSenhaError && <p className='error'>Erro ao enviar email de recuperação.</p>}
-          </div>
+            <div className='input-email-wrapper'>
+              <label>Email</label>
+              <br></br>
+              <input type="email" value={recuperaSenhaEmail} onChange={handleRecuperaSenhaEmailChange}></input>
+              {validRecuperaSenhaEmail && <p className='error'>{validRecuperaSenhaEmail}</p>}
+              {recuperaSenhaError && <p className='error'>Erro ao enviar email de recuperação.</p>}
+            </div>
 
-          <Button className='btn' onClick={(e) => handleRecuperaSenha(e)}>
-            Enviar Email
-            <input type="submit" style={{display: "none"}}></input>
-          </Button>
+            <Button className='btn' onClick={(e) => handleRecuperaSenha(e)}>
+              Enviar Email
+              <input type="submit" style={{display: "none"}}></input>
+            </Button>
+          </>}
 
           <button onClick={() => setModalRecuperaSenhaOpen(false)}><FontAwesomeIcon icon={faXmark} className='close-icon' /></button>
         </Modal>}

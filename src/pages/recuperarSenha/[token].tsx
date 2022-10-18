@@ -3,6 +3,8 @@ import { HomeStyle } from '../../styles/pages/Home';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { Button } from '../../styles/components/Button.style';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import axios from 'axios';
 
@@ -15,8 +17,10 @@ const RecuperarSenha: NextPage = () => {
     const [novaSenha, setNovaSenha] = useState<string>('');
     const [updateSenhaError, setUpdateSenhaError] = useState<boolean>(false);
 
+    const [showPass, setShowPass] = useState<boolean>(false);
+
     const passwordValidation = (senha: string) => {
-        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(senha);
+        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(senha);
     }
 
     const handleSenhaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,14 +66,16 @@ const RecuperarSenha: NextPage = () => {
                     <div className='forms'>
                         <form>
                             <label>Nova Senha</label>
-                            <input type="password" value={novaSenha} onChange={handleSenhaChange}></input>
+                            <div className='pass-input'>
+                                <input type={showPass ? "text" : "password"} value={novaSenha} onChange={handleSenhaChange}></input>
+                                <FontAwesomeIcon icon={faEye} className='pass-icon' onClick={() => setShowPass(!showPass)} />
+                            </div>
 
                             {validPassword && 
                                 <>
-                                    <p className='error-pass'>Senha deve conter ao menos 8 caracteres.</p>
-                                    <p className='error-pass'>1 maiúsculo.</p>
-                                    <p className='error-pass'>1 minúsculo.</p>
-                                    <p className='error-pass'>1 numérico.</p>
+                                    <p className='error-pass'>Senha deve conter ao menos 8 caracteres:</p>
+                                    <p className='error-pass'>ao menos 1 maiúsculo, 1 minúsculo,</p>  
+                                    <p className='error-pass'>1 numérico e 1 especial.</p>
                                 </>
                             }
 
