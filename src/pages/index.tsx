@@ -1,4 +1,4 @@
-import type { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import { HomeStyle } from '../styles/pages/Home';
 import { Button } from '../styles/components/Button.style';
@@ -9,8 +9,9 @@ import { AuthContext } from '../contexts/AuthContext';
 import Router from 'next/router';
 import { faXmark, faEye } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import axios from 'axios';
 import { Modal } from '../styles/components/Modal.style';
+import { api } from '../services/api';
+import { parseCookies } from 'nookies';
 
 const Home: NextPage = () => {
 
@@ -25,6 +26,7 @@ const Home: NextPage = () => {
 
   const [validPassword, setValidPassword] = useState<string | null>(null);
   const [validEmail, setValidEmail] = useState<string | null>(null);
+  const [validNome, setValidNome] = useState<string | null>(null);
   const [validRecuperaSenhaEmail, setValidRecuperaSenhaEmail] = useState<string | null>(null);
 
   const [emailExists, setEmailExists] = useState<boolean>(false);
@@ -37,23 +39,19 @@ const Home: NextPage = () => {
   const [showLoginPass, setShowLoginPass] = useState<boolean>(false);
   const [showSignPass, setShowSignPass] = useState<boolean>(false);
 
-  const { login, loginError, isAuthenticated } = useContext(AuthContext);
-
-  if (isAuthenticated) {
-    Router.push('/dashboard');
-  }
+  const { login, loginError, emailNaoConfirmado } = useContext(AuthContext);
 
   const handleLogin = async () => {
     await login(loginEmail, loginSenha);
   }
 
-  const handleSignIn = async (e:any) => {
+  const handleSignIn = async (e: React.MouseEvent<HTMLDivElement> | React.FormEvent<HTMLFormElement>) => {
 
     e.preventDefault();
 
     if (!validPassword && !validEmail) {
       try {
-        await axios.post('http://localhost:5000/usuarios', {
+        await api.post('/usuarios', {
           nome: signNome,
           email: signEmail,
           senha: signSenha
@@ -71,13 +69,13 @@ const Home: NextPage = () => {
     }
   }
 
-  const handleRecuperaSenha = async (e:any) => {
+  const handleRecuperaSenha = async (e: React.MouseEvent<HTMLDivElement>) => {
 
     e.preventDefault();
 
     if (!validRecuperaSenhaEmail) {
       try {
-        await axios.post('http://localhost:5000/usuarios/esqueceuSenha', {
+        await api.post('/usuarios/esqueceuSenha', {
           email: recuperaSenhaEmail
         });
         setEmailRecuperacaoEnviado(true);
@@ -89,16 +87,26 @@ const Home: NextPage = () => {
   }
 
   const nomeValidation = (nome: string) => {
-    return /^.{6,}$/.test(nome);
+    return /^.{3,}$/.test(nome);
   }
 
   const passwordValidation = (senha: string) => {
-    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(senha);
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$!%*?&])[A-Za-z\d@#$!%*?&]{8,}$/.test(senha);
   }
 
   const emailValidation = (email: string) => {
     return /\S+@\S+\.\S+/.test(email);
   }
+
+  const handleNomeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!nomeValidation(event.target.value)) {
+      setValidNome('Nome deve ter ao menos 3 caracteres.');
+    } else {
+      setValidNome(null);
+    }
+
+    setSignNome(event.target.value);
+  };
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!emailValidation(event.target.value)) {
@@ -157,6 +165,8 @@ const Home: NextPage = () => {
 
               {loginError && <p className='error'>Email ou Senha Incorretos.</p>}
 
+              {emailNaoConfirmado && <p className='error'>Seu email precisa ser confirmado.</p>}
+
               <p className='error'><a href='' onClick={(e) => {e.preventDefault(); setModalRecuperaSenhaOpen(true)}}>Esqueceu sua senha?</a></p>
 
               <Button className='btn' onClick={handleLogin}>
@@ -167,7 +177,9 @@ const Home: NextPage = () => {
 
             <form onSubmit={(e) => handleSignIn(e)}>
               <label>Nome</label>
-              <input type="text" onChange={(e) => setSignNome(e.target.value)}></input>
+              <input type="text" onChange={handleNomeChange}></input>
+
+              {validNome && <p className='error'>{validNome}</p>}
 
               <label>Email</label>
               <input type="email" value={signEmail} onChange={handleEmailChange}></input>
@@ -239,6 +251,24 @@ const Home: NextPage = () => {
       <Rodape />
     </>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+
+  const { ['gabaritou.token']: token } = parseCookies(ctx);
+
+  if (token) {
+      return {
+          redirect: {
+              destination: '/dashboard',
+              permanent: false
+          }
+      }
+  }
+
+  return {
+    props: {}
+  }
 }
 
 export default Home;

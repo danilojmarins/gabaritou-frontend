@@ -5,8 +5,8 @@ import Head from 'next/head';
 import { Button } from '../../styles/components/Button.style';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { api } from '../../services/api';
 
 const RecuperarSenha: NextPage = () => {
 
@@ -33,21 +33,21 @@ const RecuperarSenha: NextPage = () => {
         setNovaSenha(event.target.value);
     }
 
-    const handleUpdateSenha = async (e: any) => {
+    const handleUpdateSenha = async (e: React.MouseEvent<HTMLDivElement> | React.FormEvent<HTMLInputElement>) => {
         e.preventDefault();
 
         if (!validPassword) {
             try {
-                await axios.post('http://localhost:5000/usuarios/updateSenha', {
+                await api.post('/usuarios/updateSenha', {
                     senha: novaSenha,
                     token: token
                 });
                 router.push('/');
             }
-            catch(error: any) {
+            catch(error) {
                 setUpdateSenhaError(true);
             }
-          }
+        }
     }
 
     return (
