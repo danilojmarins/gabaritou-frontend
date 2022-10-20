@@ -2,6 +2,9 @@ import type { GetServerSideProps, NextPage } from 'next';
 import { destroyCookie, parseCookies } from 'nookies';
 import { getApiClient } from '../services/axios';
 import Head from 'next/head';
+import Cabecalho from '../components/Cabecalho';
+import { DashboardStyle } from '../styles/pages/Dashboard.style';
+import Rodape from '../components/Rodape';
  
 export default function Dashboard({ user }: any) {
 
@@ -13,7 +16,13 @@ export default function Dashboard({ user }: any) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <div>Olá {user.nome}</div>
+            <Cabecalho loggedIn={true} />
+
+            <DashboardStyle>
+                <div>Olá {user.nome}</div>
+            </DashboardStyle>
+
+            <Rodape />
         </>
     )
 }

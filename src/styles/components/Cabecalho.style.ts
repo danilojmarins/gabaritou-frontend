@@ -9,7 +9,7 @@ export const CabecalhoStyle = styled.div`
     align-items: center;
     height: 100px;
     position: fixed;
-
+    top: 0;
     background: rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(7px);
@@ -31,6 +31,13 @@ export const CabecalhoStyle = styled.div`
         width: 45px;
         color: ${props => props.theme.colors.primary};
         margin-left: 20px;
+        display: inline-block;
+    }
+
+    .logout-icon {
+        width: 20px;
+        color: ${props => props.theme.colors.primary};
+        margin-left: 15px;
         display: inline-block;
     }
 
