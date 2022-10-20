@@ -140,7 +140,7 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <Cabecalho loggedIn={false} />
+      <Cabecalho loggedIn={false} cargo={''} />
       <HomeStyle>
 
         <Head>

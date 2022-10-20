@@ -5,6 +5,7 @@ import Head from 'next/head';
 import Cabecalho from '../components/Cabecalho';
 import { DashboardStyle } from '../styles/pages/Dashboard.style';
 import Rodape from '../components/Rodape';
+import QuestaoCard from '../components/QuestaoCard';
  
 export default function Dashboard({ user }: any) {
 
@@ -16,10 +17,12 @@ export default function Dashboard({ user }: any) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <Cabecalho loggedIn={true} />
+            <Cabecalho loggedIn={true} cargo={user.cargo} />
 
             <DashboardStyle>
                 <div>Olá {user.nome}</div>
+
+                <QuestaoCard />
             </DashboardStyle>
 
             <Rodape />
