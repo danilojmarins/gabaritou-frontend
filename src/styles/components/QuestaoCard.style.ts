@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-export const QuestaoCardStyle = styled.div`
+export const QuestaoCardStyle = styled.div.attrs((props: {width: string}) => props)`
 
-    width: 100%;
+    width: ${(props) => props.width};
     padding: 2% 3% 4% 3%;
     background: rgba(246,246,244, 0.3);
     border-radius: 20px;
@@ -36,6 +36,12 @@ export const QuestaoCardStyle = styled.div`
 
     input {
         margin-right: 10px;
+    }
+
+    .button {
+        position: absolute;
+        bottom: 10%;
+        right: 5%;
     }
 
 `;

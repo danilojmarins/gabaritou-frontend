@@ -73,4 +73,30 @@ export const CabecalhoStyle = styled.div`
         }
     }
 
+    .nav-content-dropdown {
+        position: absolute;
+        width: max-content;
+        left: -5%;
+        top: 100%;
+        font-size: 16px;
+        text-align: center;
+        background: rgba(246,246,244, 0.8);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        border-radius: 3px;
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(7px);
+
+        p {
+            padding: 15px 10px;
+
+            &:hover {
+                background-color: rgba(220,220,220, 0.9);
+            }
+        }
+    }
+
+    .hide {
+        display: none;
+    }
+
 `;

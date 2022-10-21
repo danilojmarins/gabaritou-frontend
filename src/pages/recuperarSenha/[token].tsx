@@ -2,7 +2,7 @@ import { NextPage } from 'next';
 import { HomeStyle } from '../../styles/pages/Home.style';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { Button } from '../../styles/components/Button.style';
+import { Button } from '../../styles/components/MinimalComponents.style';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import React, { useState } from 'react';

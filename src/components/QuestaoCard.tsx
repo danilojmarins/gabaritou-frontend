@@ -2,7 +2,7 @@ import { QuestaoCardStyle } from '../styles/components/QuestaoCard.style';
 
 const QuestaoCard = () => {
     return (
-        <QuestaoCardStyle>
+        <QuestaoCardStyle width='100%'>
             <p className='orgao'>Banca: LOREM IMPSUM (2022)</p>
 
             <p className='enunciado'>

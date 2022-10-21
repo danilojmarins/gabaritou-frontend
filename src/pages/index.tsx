@@ -1,7 +1,7 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import { HomeStyle } from '../styles/pages/Home.style';
-import { Button } from '../styles/components/Button.style';
+import { Button } from '../styles/components/MinimalComponents.style';
 import Cabecalho from '../components/Cabecalho';
 import Rodape from '../components/Rodape';
 import React, { useContext, useState } from 'react';
