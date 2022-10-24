@@ -2,19 +2,56 @@ import styled from 'styled-components';
 
 export const CabecalhoStyle = styled.div`
 
-    display: flex;
-    width: 100vw;
-    padding: 0 20%;
-    justify-content: space-between;
-    align-items: center;
-    height: 100px;
-    position: fixed;
-    top: 0;
-    background: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(7px);
-    -webkit-backdrop-filter: blur(7px);
-    z-index: 5;
+    .nav-info {
+        width: 100vw;
+        height: 40px;
+        padding: 0 20px;
+        background-color: ${props => props.theme.colors.primary};
+        text-align: right;
+        display: flex;
+        justify-content: right;
+        align-items: center;
+        color: #FFF;
+
+        a {
+            margin: 20px;
+            height: auto;
+            color: #FFF;
+            text-decoration: none;
+            position: relative;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        .space {
+            ::after {
+                position: absolute;
+                content: '';
+                width: 1px;
+                height: 70%;
+                top: 15%;
+                margin-left: 20px;
+                background-color: #638e2a;
+            }
+        }
+    }
+
+    .nav-menu {
+        display: flex;
+        width: 100vw;
+        padding: 0 10%;
+        justify-content: space-between;
+        align-items: center;
+        height: 90px;
+        background: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(7px);
+        z-index: 5;
+    }
 
     .logo {
         display: flex;
@@ -50,7 +87,7 @@ export const CabecalhoStyle = styled.div`
 
     .nav-content {
         color: ${props => props.theme.colors.text};
-        font-size: ${props => props.theme.fontSize.secondary};
+        font-size: 16px;
         padding: 0 20px;
         height: 100%;
         display: flex;
@@ -64,13 +101,13 @@ export const CabecalhoStyle = styled.div`
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 0;
+            height: 3px;
             background-color: ${props => props.theme.colors.primary};
             transition: all 0.2s;
         }
 
         &:hover::after {
-            height: 5px;
+            height: 8px;
         }
     }
 

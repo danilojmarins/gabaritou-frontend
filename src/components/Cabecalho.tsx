@@ -1,10 +1,12 @@
 import { faSquareCheck } from '@fortawesome/free-regular-svg-icons';
-import { faRightFromBracket, faGears } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRightFromBracket, faGears, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
+import { faFacebookF } from '@fortawesome/free-brands-svg-icons';
 import { CabecalhoStyle } from '../styles/components/Cabecalho.style';
 import { destroyCookie } from 'nookies';
 import Router from 'next/router';
 import { useState } from 'react';
+import Image from 'next/image';
 
 interface CabecalhoProps {
     loggedIn: boolean;
@@ -33,27 +35,42 @@ const Cabecalho = (props: CabecalhoProps) => {
 
     return (
         <CabecalhoStyle>
-            <div className="logo">
-                <h1>Gabaritou</h1>
-                <FontAwesomeIcon icon={faSquareCheck} className='icon' />
+
+            <div className='nav-info'>
+                {props.loggedIn ? 
+                    <a className='space' onClick={handleLogout} >Logout <FontAwesomeIcon icon={faRightFromBracket} /></a>
+                :
+                    <><a href='/login' className='space'>Cadastrar</a>
+                    <a href='/login' className='space'>Entrar <FontAwesomeIcon icon={faRightToBracket} /></a></>
+                }
+                <a href='/contato'>Contato</a>
+                <a href='https://facebook.com/gabaritou'><FontAwesomeIcon icon={faFacebookF} /></a>
             </div>
 
-            <div className='navbar'>
-                <div className='nav-content'>Questões</div>
-                <div className='nav-content'>Simulado</div>
-                <div className='nav-content'>Bancas</div>
-                {props.loggedIn ? <div className='nav-content' onClick={handleLogout} >Logout <FontAwesomeIcon className='logout-icon' icon={faRightFromBracket} /></div> : <div className='nav-content'>Login</div>}
-                {props.cargo === 'admin' ?
-                    <div className='nav-content' onMouseOver={() => handleMouseOver('adm')} onMouseOut={handleMouseOut}>
-                        ADM
-                        <FontAwesomeIcon className='logout-icon' icon={faGears} />
+            <div className='nav-menu'>
+                <a href='/home' className="logo">
+                    <Image className='img' src='/images/marca/logo-gabaritou.png' alt='logo gabaritou' width={213} height={60} />
+                </a>
 
-                        <div className={(isHovering && navContentId === 'adm') ? 'nav-content-dropdown' : 'nav-content-dropdown hide'}>
-                            <p onClick={() => Router.push('/admin/bancas')}>Gerenciar Bancas</p>
-                            <p>Gerenciar Provas</p>  
+                <div className='navbar'>
+                    <div className='nav-content'>Questões</div>
+                    <div className='nav-content'>Provas</div>
+                    <div className='nav-content'>Concursos</div>
+                    <div className='nav-content'>Disciplinas</div>
+                    <div className='nav-content'>Órgãos</div>
+                    <div className='nav-content'>Bancas</div>
+                    {props.cargo === 'admin' ?
+                        <div className='nav-content' onMouseOver={() => handleMouseOver('adm')} onMouseOut={handleMouseOut}>
+                            ADM
+                            <FontAwesomeIcon className='logout-icon' icon={faGears} />
+
+                            <div className={(isHovering && navContentId === 'adm') ? 'nav-content-dropdown' : 'nav-content-dropdown hide'}>
+                                <p onClick={() => Router.push('/admin/bancas')}>Gerenciar Bancas</p>
+                                <p>Gerenciar Provas</p>  
+                            </div>
                         </div>
-                    </div>
-                : null}
+                    : null}
+                </div>
             </div>
         </CabecalhoStyle>
     )

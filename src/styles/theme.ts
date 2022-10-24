@@ -3,7 +3,7 @@ const theme = {
         background: 'rgba(235, 240, 235, 1)',
         alternativeBackground: '#16213E',
         text: '#222',
-        primary: '#E3C770',
+        primary: '#8CC63E',
         secondary: '#F96666',
         widgets: '#0051BA'
     },

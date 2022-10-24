@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import { HomeStyle } from '../../styles/pages/Home.style';
+import { HomeStyle } from '../../styles/pages/Login.style';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { Button } from '../../styles/components/MinimalComponents.style';
