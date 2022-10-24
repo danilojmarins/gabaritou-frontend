@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
@@ -8,6 +8,16 @@ import { api } from "../../services/api";
 import { Button, Form, Input, Label, Table } from "../../styles/components/MinimalComponents.style";
 import { QuestaoCardStyle } from "../../styles/components/QuestaoCard.style";
 import { DashboardStyle } from "../../styles/pages/Dashboard.style";
+import { getApiClient } from "../../services/axios";
+import { destroyCookie, parseCookies } from "nookies";
+
+interface User {
+    id: string;
+    nome: string;
+    email: string;
+    email_confirmado: boolean;
+    cargo: string;
+}
 
 const Bancas: NextPage = () => {
 
@@ -190,6 +200,52 @@ const Bancas: NextPage = () => {
             <Rodape />
         </>
     )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+
+    const apiClient = getApiClient(ctx);
+
+    const { ['gabaritou.token']: token } = parseCookies(ctx);
+
+    if (!token) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false
+            }
+        }
+    }
+
+    let user: User | undefined;
+
+    await apiClient.get('/usuarios').then(response => {
+        user = response.data;
+    }).catch(function() {
+        destroyCookie(ctx, 'gabaritou.token');
+    });
+
+    if (!user) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false
+            }
+        }
+    }
+
+    if (user.cargo === 'aluno') {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false
+            }
+        }
+    }
+
+    return {
+        props: { user }
+    }
 }
 
 export default Bancas;

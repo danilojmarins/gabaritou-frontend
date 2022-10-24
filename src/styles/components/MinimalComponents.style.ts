@@ -94,14 +94,16 @@ export const Table = styled.table`
     }
 
     .edit-icon {
-        font-size: 18px;
+        width: 16px;
+        height: 16px;
         color: ${props => props.theme.colors.widgets};
         padding: 0 8px;
         cursor: pointer;
     }
 
     .delete-icon {
-        font-size: 18px;
+        width: 16px;
+        height: 16px;
         color: ${props => props.theme.colors.secondary};
         padding: 0 8px;
         cursor: pointer;
