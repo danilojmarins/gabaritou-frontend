@@ -1,6 +1,6 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
-import { HomeStyle } from '../styles/pages/Login.style';
+import { LoginStyle } from '../styles/pages/Login.style';
 import { Button } from '../styles/components/MinimalComponents.style';
 import Cabecalho from '../components/Cabecalho';
 import Rodape from '../components/Rodape';
@@ -140,8 +140,9 @@ const Login: NextPage = () => {
 
   return (
     <>
-      <Cabecalho loggedIn={false} cargo={''} />
-      <HomeStyle>
+      <Cabecalho loggedIn={false} cargo={'aluno'} />
+
+      <LoginStyle>
 
         <Head>
           <title>Gabaritou</title>
@@ -247,7 +248,7 @@ const Login: NextPage = () => {
           <button onClick={() => setModalRecuperaSenhaOpen(false)}><FontAwesomeIcon icon={faXmark} className='close-icon' /></button>
         </Modal>}
 
-      </HomeStyle>
+      </LoginStyle>
       <Rodape />
     </>
   )

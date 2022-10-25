@@ -1,10 +1,11 @@
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import Cabecalho from "../components/Cabecalho";
 import { HomeStyle } from "../styles/pages/Home.style";
+import Rodape from "../components/Rodape";
 
 const Home: NextPage = () => {
 
@@ -13,6 +14,12 @@ const Home: NextPage = () => {
     const [clicked, setClicked] = useState<boolean>(false);
     let timer: any;
 
+     useEffect(() => {
+
+        setSlide(document.getElementById('slide-1'));
+
+    }, []);
+/*
     useEffect(() => {
 
         setSlide(document.getElementById('slide-1'));
@@ -24,12 +31,12 @@ const Home: NextPage = () => {
             // eslint-disable-next-line react-hooks/exhaustive-deps
             timer = setTimeout(function() {
                 if (inputValue && inputValueNumber && clicked === false && inputValueNumber !== 2) {
-                    setInputValue(`slide-${inputValueNumber + 1}`);
+                    setInputValue(`slide-2`);
                     if (slide) {
                         slide.style.opacity = '0';
                         slide.style.pointerEvents = 'none';
                     }
-                    setSlide(document.getElementById(`slide-${inputValueNumber + 1}`));
+                    setSlide(document.getElementById(`slide-2`));
                 } else if (inputValue && inputValueNumber && clicked === false && inputValueNumber === 2) {
                     setInputValue(`slide-1`);
                     if (slide) {
@@ -44,13 +51,9 @@ const Home: NextPage = () => {
 
         }
 
-    }, [slide, inputValue, clicked]);
+    }, [slide, inputValue, clicked]); */
 
-    useEffect(() => {
-
-        setSlide(document.getElementById('slide-1'));
-
-    }, []);
+    console.log(slide);
 
     useEffect(() => {
 
@@ -132,14 +135,14 @@ const Home: NextPage = () => {
                     <div className='wrapper'>
                         <div className='div'>
                             <Image className="crs-img" id="slide-1" src='/images/banner-gabaritou.png' alt="banner gabaritou" width={1400} height={500} />
-                            <input type='radio' name='radio' value={`slide-1`} checked={inputValue === `slide-1`} onChange={handleChange}></input>
                         </div>
 
                         <div className='div'>
                             <Image className="crs-img" id="slide-2" src='/images/banner-analise.png' alt="banner analise" width={1400} height={500} />
-                            <input type='radio' name='radio' value={`slide-2`} checked={inputValue === `slide-2`} onChange={handleChange}></input>
                         </div>
-                    
+
+                        <input type='radio' name='radio' value={`slide-1`} checked={inputValue === `slide-1`} onChange={handleChange}></input>
+                        <input type='radio' name='radio' value={`slide-2`} checked={inputValue === `slide-2`} onChange={handleChange}></input>
             
                         <div className='btn prev' onClick={handlePrevBtn}><FontAwesomeIcon className='icon-btn' icon={faAngleLeft} fontSize='35px' color='#27921A' /></div>
                         <div className='btn next' onClick={handleNextBtn}><FontAwesomeIcon className='icon-btn' icon={faAngleRight} fontSize='35px' color='#27921A' /></div>
@@ -147,6 +150,8 @@ const Home: NextPage = () => {
 
                 </div>
             </HomeStyle>
+
+            <Rodape />
         </>
     )
 }

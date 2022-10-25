@@ -7,6 +7,7 @@ import { destroyCookie } from 'nookies';
 import Router from 'next/router';
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface CabecalhoProps {
     loggedIn: boolean;
@@ -40,11 +41,17 @@ const Cabecalho = (props: CabecalhoProps) => {
                 {props.loggedIn ? 
                     <a className='space' onClick={handleLogout} >Logout <FontAwesomeIcon icon={faRightFromBracket} /></a>
                 :
-                    <><a href='/login' className='space'>Cadastrar</a>
-                    <a href='/login' className='space'>Entrar <FontAwesomeIcon icon={faRightToBracket} /></a></>
+                    <>
+                        <Link href='/login'>
+                            <a className='space'>Cadastrar</a>
+                        </Link>
+                        <Link href='/login'>
+                            <a className='space'>Entrar</a>
+                        </Link>
+                    </>
                 }
                 <a href='/contato'>Contato</a>
-                <a href='https://facebook.com/gabaritou'><FontAwesomeIcon icon={faFacebookF} /></a>
+                <a href='https://facebook.com/gabaritou'><FontAwesomeIcon icon={faFacebookF} width='10px' /></a>
             </div>
 
             <div className='nav-menu'>

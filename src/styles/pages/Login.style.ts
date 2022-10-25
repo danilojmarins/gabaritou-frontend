@@ -1,54 +1,20 @@
 import styled from 'styled-components';
 
-export const HomeStyle = styled.div`
+export const LoginStyle = styled.div`
 
-    height: 100vh;
     padding: 50px 20%;
     background: rgba(235, 240, 235, 1);
-    background-image: url('/wave.svg');
-    background-repeat: no-repeat;
-    background-position: center bottom;
     position: relative;
 
-    h1 {
-        color: ${props => props.theme.colors.primary};
-        font-size: ${props => props.theme.fontSize.primary};
-        display: inline-block;
-    }
-
-    .title {
-        display: flex;
-        position: relative;
-        top: 10%;
-        left: 7%;
-        width: max-content;
-        align-items: center;
-    }
-
-    .icon {
-        width: 45px;
-        color: ${props => props.theme.colors.primary};
-        margin-left: 20px;
-        display: inline-block;
-    }
-
-    p {
-        color: ${props => props.theme.colors.text};
-        font-size: ${props => props.theme.fontSize.secondary};
-    }
-
     .login-card {
-        width: 40%;
-        position: absolute;
-        right: 20%;
-        top: 30%;
+        margin: auto;
+        width: 70%;
         padding: 2% 3% 4% 3%;
         background: rgba(255, 255, 255, 0.3);
         border-radius: 20px;
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
         backdrop-filter: blur(7px);
         -webkit-backdrop-filter: blur(7px);
-        z-index: 3;
     }
 
     h3 {
@@ -117,12 +83,6 @@ export const HomeStyle = styled.div`
 
     .btn {
         margin: 10% auto 0 auto;
-    }
-
-    .wave {
-        z-index: 0;
-        position: absolute;
-        bottom: 0;
     }
 
 `;

@@ -2,8 +2,10 @@ import styled from 'styled-components';
 
 export const CabecalhoStyle = styled.div`
 
+    position: relative;
+    z-index: 3;
+
     .nav-info {
-        width: 100vw;
         height: 40px;
         padding: 0 20px;
         background-color: ${props => props.theme.colors.primary};
@@ -41,7 +43,6 @@ export const CabecalhoStyle = styled.div`
 
     .nav-menu {
         display: flex;
-        width: 100vw;
         padding: 0 10%;
         justify-content: space-between;
         align-items: center;
@@ -50,7 +51,6 @@ export const CabecalhoStyle = styled.div`
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
         backdrop-filter: blur(7px);
         -webkit-backdrop-filter: blur(7px);
-        z-index: 5;
     }
 
     .logo {

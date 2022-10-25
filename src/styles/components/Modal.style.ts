@@ -3,8 +3,8 @@ import styled from 'styled-components';
 export const Modal = styled.div`
 
     position: absolute;
-    left: calc(50vw - 350px);
-    top: calc(50vh - 100px);
+    left: calc(50% - 350px);
+    top: calc(50% - 100px);
     background-color: #FFF;
     width: 700px;
     padding: 80px 0;
