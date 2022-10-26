@@ -6,21 +6,29 @@ import Cabecalho from '../components/Cabecalho';
 import { DashboardStyle } from '../styles/pages/Dashboard.style';
 import Rodape from '../components/Rodape';
 import QuestaoCard from '../components/QuestaoCard';
+
+interface User {
+    id: string;
+    nome: string;
+    email: string;
+    email_confirmado: boolean;
+    cargo_id: number;
+}
  
-export default function Dashboard({ user }: any) {
+const Questoes: NextPage<User> = (user) => {
 
     return (
         <>
             <Head>
-                <title>Gabaritou | Dashboard</title>
+                <title>Gabaritou TI | Questões</title>
                 <meta name="description" content="Questões de concursos de TI." />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <Cabecalho loggedIn={true} cargo={user.cargo} />
+            <Cabecalho user={user} />
 
             <DashboardStyle>
-                <div>Olá {user.nome}</div>
+                <div>Olá {user?.nome}</div>
 
                 <QuestaoCard />
             </DashboardStyle>
@@ -38,14 +46,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
     if (!token) {
         return {
-            redirect: {
-                destination: '/',
-                permanent: false
-            }
+            props: {}
         }
     }
 
-    let user;
+    let user: User | undefined;
 
     await apiClient.get('/usuarios').then(response => {
         user = response.data;
@@ -55,14 +60,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
     if (!user) {
         return {
-            redirect: {
-                destination: '/',
-                permanent: false
-            }
+            props: {}
         }
     }
 
     return {
-        props: { user }
+        props: user
     }
 }
+
+export default Questoes;

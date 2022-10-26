@@ -6,23 +6,32 @@ import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import Cabecalho from "../components/Cabecalho";
 import { HomeStyle } from "../styles/pages/Home.style";
 import Rodape from "../components/Rodape";
+import { getApiClient } from "../services/axios";
+import { destroyCookie, parseCookies } from "nookies";
+import Head from "next/head";
 
-const Home: NextPage = () => {
+interface User {
+    id: string;
+    nome: string;
+    email: string;
+    email_confirmado: boolean;
+    cargo_id: number;
+}
+
+const Home: NextPage<User> = (user) => {
 
     const [slide, setSlide] = useState<HTMLElement | null>(null);
     const [inputValue, setInputValue] = useState<string>('slide-1');
     const [clicked, setClicked] = useState<boolean>(false);
     let timer: any;
 
-     useEffect(() => {
+    useEffect(() => {
 
         setSlide(document.getElementById('slide-1'));
 
     }, []);
-/*
-    useEffect(() => {
 
-        setSlide(document.getElementById('slide-1'));
+    useEffect(() => {
 
         let inputValueNumber = parseInt(inputValue.replace(/\D/g,''));
 
@@ -42,18 +51,17 @@ const Home: NextPage = () => {
                     if (slide) {
                         slide.style.opacity = '0';
                         slide.style.pointerEvents = 'none';
+                        console.log('hide');
                     }
                     setSlide(document.getElementById(`slide-1`));
                 } else {
                     setClicked(false);
                 }
-            }, 4000);
+            }, 5000);
 
         }
 
-    }, [slide, inputValue, clicked]); */
-
-    console.log(slide);
+    }, [slide, inputValue, clicked]);
 
     useEffect(() => {
 
@@ -127,7 +135,13 @@ const Home: NextPage = () => {
 
     return (
         <>
-            <Cabecalho loggedIn={true} cargo='aluno' />
+            <Head>
+                <title>Gabaritou TI</title>
+                <meta name="description" content="Questões de concursos de TI." />
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+
+            <Cabecalho user={user} />
 
             <HomeStyle>
                 <div className="carousel">
@@ -144,8 +158,8 @@ const Home: NextPage = () => {
                         <input type='radio' name='radio' value={`slide-1`} checked={inputValue === `slide-1`} onChange={handleChange}></input>
                         <input type='radio' name='radio' value={`slide-2`} checked={inputValue === `slide-2`} onChange={handleChange}></input>
             
-                        <div className='btn prev' onClick={handlePrevBtn}><FontAwesomeIcon className='icon-btn' icon={faAngleLeft} fontSize='35px' color='#27921A' /></div>
-                        <div className='btn next' onClick={handleNextBtn}><FontAwesomeIcon className='icon-btn' icon={faAngleRight} fontSize='35px' color='#27921A' /></div>
+                        <div className='btn prev' onClick={handlePrevBtn}><FontAwesomeIcon className='icon-btn' icon={faAngleLeft} fontSize='35px' /></div>
+                        <div className='btn next' onClick={handleNextBtn}><FontAwesomeIcon className='icon-btn' icon={faAngleRight} fontSize='35px' /></div>
                     </div>
 
                 </div>
@@ -154,6 +168,37 @@ const Home: NextPage = () => {
             <Rodape />
         </>
     )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+
+    const apiClient = getApiClient(ctx);
+
+    const { ['gabaritou.token']: token } = parseCookies(ctx);
+
+    if (!token) {
+        return {
+            props: {}
+        }
+    }
+
+    let user: User | undefined;
+
+    await apiClient.get('/usuarios').then(response => {
+        user = response.data;
+    }).catch(function() {
+        destroyCookie(ctx, 'gabaritou.token');
+    });
+
+    if (!user) {
+        return {
+            props: {}
+        }
+    }
+
+    return {
+        props: user
+    }
 }
 
 export default Home;

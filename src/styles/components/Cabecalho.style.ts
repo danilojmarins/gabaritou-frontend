@@ -64,21 +64,6 @@ export const CabecalhoStyle = styled.div`
         display: inline-block;
     }
 
-    .icon {
-        width: 45px;
-        height: 45px;
-        color: ${props => props.theme.colors.primary};
-        margin-left: 20px;
-        display: inline-block;
-    }
-
-    .logout-icon {
-        width: 20px;
-        color: ${props => props.theme.colors.primary};
-        margin-left: 15px;
-        display: inline-block;
-    }
-
     .navbar {
         display: flex;
         height: 100%;

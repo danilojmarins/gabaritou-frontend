@@ -6,14 +6,13 @@ import Cabecalho from '../components/Cabecalho';
 import Rodape from '../components/Rodape';
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import Router from 'next/router';
 import { faXmark, faEye } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Modal } from '../styles/components/Modal.style';
 import { api } from '../services/api';
 import { parseCookies } from 'nookies';
 
-const Login: NextPage = () => {
+const Login: NextPage = ({ user }: any) => {
 
   const [loginEmail, setLoginEmail] = useState<string>('');
   const [loginSenha, setLoginSenha] = useState<string>('');
@@ -140,15 +139,15 @@ const Login: NextPage = () => {
 
   return (
     <>
-      <Cabecalho loggedIn={false} cargo={'aluno'} />
+      <Head>
+        <title>Gabaritou TI | Login</title>
+        <meta name="description" content="Questões de concursos de TI." />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <Cabecalho user={user} />
 
       <LoginStyle>
-
-        <Head>
-          <title>Gabaritou</title>
-          <meta name="description" content="Questões de concursos de TI." />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
 
         <div className='login-card'>
           <h3>Entre ou Registre-se</h3>

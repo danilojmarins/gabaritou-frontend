@@ -1,6 +1,5 @@
-import { faSquareCheck } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRightFromBracket, faGears, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
+import { faGears } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF } from '@fortawesome/free-brands-svg-icons';
 import { CabecalhoStyle } from '../styles/components/Cabecalho.style';
 import { destroyCookie } from 'nookies';
@@ -9,12 +8,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-interface CabecalhoProps {
-    loggedIn: boolean;
-    cargo: string;
-}
-
-const Cabecalho = (props: CabecalhoProps) => {
+const Cabecalho = ({ user }: any) => {
 
     const [isHovering, setIsHovering] = useState<boolean>(false);
     const [navContentId, setNavContentId] = useState<string>('');
@@ -38,8 +32,13 @@ const Cabecalho = (props: CabecalhoProps) => {
         <CabecalhoStyle>
 
             <div className='nav-info'>
-                {props.loggedIn ? 
-                    <a className='space' onClick={handleLogout} >Logout <FontAwesomeIcon icon={faRightFromBracket} /></a>
+                {user ?
+                    <>
+                        <Link href='/perfil'>
+                            <a className='space'>{user.nome}</a>
+                        </Link>
+                        <a className='space' onClick={handleLogout} >Logout</a>
+                    </>
                 :
                     <>
                         <Link href='/login'>
@@ -55,9 +54,11 @@ const Cabecalho = (props: CabecalhoProps) => {
             </div>
 
             <div className='nav-menu'>
-                <a href='/home' className="logo">
-                    <Image className='img' src='/images/marca/logo-gabaritou.png' alt='logo gabaritou' width={213} height={60} />
-                </a>
+                <Link href='/'>
+                    <a className="logo">
+                        <Image className='img' src='/images/marca/logo-gabaritou.png' alt='logo gabaritou' width={213} height={60} />
+                    </a>
+                </Link>
 
                 <div className='navbar'>
                     <div className='nav-content'>Questões</div>
@@ -66,7 +67,7 @@ const Cabecalho = (props: CabecalhoProps) => {
                     <div className='nav-content'>Disciplinas</div>
                     <div className='nav-content'>Órgãos</div>
                     <div className='nav-content'>Bancas</div>
-                    {props.cargo === 'admin' ?
+                    {user?.cargo_id === 3 ?
                         <div className='nav-content' onMouseOver={() => handleMouseOver('adm')} onMouseOut={handleMouseOut}>
                             ADM
                             <FontAwesomeIcon className='logout-icon' icon={faGears} />

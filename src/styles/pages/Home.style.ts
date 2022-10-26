@@ -34,7 +34,7 @@ export const HomeStyle = styled.div`
         }
 
         &:checked:after {
-            background-color: #27921A;
+            background-color: ${props => props.theme.colors.primary};
             opacity: 1;
         }
 
@@ -47,8 +47,9 @@ export const HomeStyle = styled.div`
 
     .btn {
         position: absolute;
-        top: 280px;
+        top: 230px;
         padding: 10px;
+        color: ${props => props.theme.colors.primary};
 
         &:hover {
             cursor: pointer;
@@ -56,11 +57,11 @@ export const HomeStyle = styled.div`
     }
 
     .prev {
-        left: 15%;
+        left: 17%;
     }
 
     .next {
-        right: 15%;
+        right: 17%;
     }
 
     .crs-img {

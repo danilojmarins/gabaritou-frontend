@@ -10,16 +10,17 @@ import { QuestaoCardStyle } from "../../styles/components/QuestaoCard.style";
 import { DashboardStyle } from "../../styles/pages/Dashboard.style";
 import { getApiClient } from "../../services/axios";
 import { destroyCookie, parseCookies } from "nookies";
+import Head from "next/head";
 
 interface User {
     id: string;
     nome: string;
     email: string;
     email_confirmado: boolean;
-    cargo: string;
+    cargo_id: number;
 }
 
-const Bancas: NextPage = () => {
+const Bancas: NextPage<User> = (user) => {
 
     interface Bancas {
         id: number;
@@ -91,6 +92,10 @@ const Bancas: NextPage = () => {
                 nome: nome,
                 sigla: sigla,
                 site: site,
+            }, {
+                params: {
+                    user_cargo_id: user.cargo_id
+                }
             })
             .then((response) => {
                 setNome('');
@@ -129,7 +134,8 @@ const Bancas: NextPage = () => {
     const handleDelete = async (id: number) => {
         await api.delete('/bancas', {
             params: {
-                id: id
+                id: id,
+                user_cargo_id: user.cargo_id
             }
         })
         .then((response) => {
@@ -142,7 +148,13 @@ const Bancas: NextPage = () => {
 
     return (
         <>
-            <Cabecalho loggedIn={true} cargo='admin' />
+            <Head>
+                <title>Gabaritou TI | Bancas</title>
+                <meta name="description" content="Questões de concursos de TI." />
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+
+            <Cabecalho user={user} />
 
             <DashboardStyle>
 
@@ -234,7 +246,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         }
     }
 
-    if (user.cargo === 'aluno') {
+    if (user.cargo_id !== 3) {
         return {
             redirect: {
                 destination: '/',
@@ -244,7 +256,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
 
     return {
-        props: { user }
+        props: user
     }
 }
 
