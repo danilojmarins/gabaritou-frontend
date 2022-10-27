@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import { HomeStyle } from '../../styles/pages/Login.style';
+import { LoginStyle } from '../../styles/pages/Login.style';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { Button } from '../../styles/components/MinimalComponents.style';
@@ -38,7 +38,7 @@ const RecuperarSenha: NextPage = () => {
 
         if (!validPassword) {
             try {
-                await api.post('/usuarios/updateSenha', {
+                await api.post('/usuarios/post/updateSenha', {
                     senha: novaSenha,
                     token: token
                 });
@@ -52,7 +52,7 @@ const RecuperarSenha: NextPage = () => {
 
     return (
         <>
-            <HomeStyle>
+            <LoginStyle>
 
                 <Head>
                     <title>Gabaritou</title>
@@ -89,7 +89,7 @@ const RecuperarSenha: NextPage = () => {
                     </div>
                 </div>
 
-            </HomeStyle>
+            </LoginStyle>
         </>
     )
 }

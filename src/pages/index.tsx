@@ -158,8 +158,8 @@ const Home: NextPage<User> = (user) => {
                         <input type='radio' name='radio' value={`slide-1`} checked={inputValue === `slide-1`} onChange={handleChange}></input>
                         <input type='radio' name='radio' value={`slide-2`} checked={inputValue === `slide-2`} onChange={handleChange}></input>
             
-                        <div className='btn prev' onClick={handlePrevBtn}><FontAwesomeIcon className='icon-btn' icon={faAngleLeft} fontSize='35px' /></div>
-                        <div className='btn next' onClick={handleNextBtn}><FontAwesomeIcon className='icon-btn' icon={faAngleRight} fontSize='35px' /></div>
+                        <div className='btn prev' onClick={handlePrevBtn}><FontAwesomeIcon icon={faAngleLeft} width='30px' /></div>
+                        <div className='btn next' onClick={handleNextBtn}><FontAwesomeIcon icon={faAngleRight} width='30px' /></div>
                     </div>
 
                 </div>
@@ -184,7 +184,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
     let user: User | undefined;
 
-    await apiClient.get('/usuarios').then(response => {
+    await apiClient.get('/usuarios/get/usuarioPorId').then(response => {
         user = response.data;
     }).catch(function() {
         destroyCookie(ctx, 'gabaritou.token');

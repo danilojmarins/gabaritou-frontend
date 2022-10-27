@@ -52,7 +52,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
     let user: User | undefined;
 
-    await apiClient.get('/usuarios').then(response => {
+    await apiClient.get('/usuarios/get/usuarioPorId').then(response => {
         user = response.data;
     }).catch(function() {
         destroyCookie(ctx, 'gabaritou.token');

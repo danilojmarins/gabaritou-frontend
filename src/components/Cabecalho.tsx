@@ -32,7 +32,7 @@ const Cabecalho = ({ user }: any) => {
         <CabecalhoStyle>
 
             <div className='nav-info'>
-                {user ?
+                {(user && user.nome) ?
                     <>
                         <Link href='/perfil'>
                             <a className='space'>{user.nome}</a>

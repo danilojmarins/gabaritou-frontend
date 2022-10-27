@@ -50,7 +50,7 @@ const Login: NextPage = ({ user }: any) => {
 
     if (!validPassword && !validEmail) {
       try {
-        await api.post('/usuarios', {
+        await api.post('/usuarios/post/salvaUsuario', {
           nome: signNome,
           email: signEmail,
           senha: signSenha
@@ -74,7 +74,7 @@ const Login: NextPage = ({ user }: any) => {
 
     if (!validRecuperaSenhaEmail) {
       try {
-        await api.post('/usuarios/esqueceuSenha', {
+        await api.post('/usuarios/post/esqueceuSenha', {
           email: recuperaSenhaEmail
         });
         setEmailRecuperacaoEnviado(true);

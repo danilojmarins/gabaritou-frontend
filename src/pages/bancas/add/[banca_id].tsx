@@ -1,26 +1,21 @@
 import { GetServerSideProps, NextPage } from "next";
 import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import Cabecalho from "../../components/Cabecalho";
-import Rodape from "../../components/Rodape";
-import { api } from "../../services/api";
-import { Button, Form, Input, Label, Table } from "../../styles/components/MinimalComponents.style";
-import { QuestaoCardStyle } from "../../styles/components/QuestaoCard.style";
-import { DashboardStyle } from "../../styles/pages/Dashboard.style";
-import { getApiClient } from "../../services/axios";
+import Cabecalho from "../../../components/Cabecalho";
+import Rodape from "../../../components/Rodape";
+import { api } from "../../../services/api";
+import { Button, Form, Input, Label, Table } from "../../../styles/components/MinimalComponents.style";
+import { QuestaoCardStyle } from "../../../styles/components/QuestaoCard.style";
+import { DashboardStyle } from "../../../styles/pages/Dashboard.style";
+import { getApiClient } from "../../../services/axios";
 import { destroyCookie, parseCookies } from "nookies";
 import Head from "next/head";
+import { User } from "../../../types/User";
+import { useRouter } from "next/router";
 
-interface User {
-    id: string;
-    nome: string;
-    email: string;
-    email_confirmado: boolean;
-    cargo_id: number;
-}
+const EditBanca: NextPage<User> = (user) => {
 
-const Bancas: NextPage<User> = (user) => {
+    const router = useRouter();
+    const { banca_id } = router.query;
 
     interface Bancas {
         id: number;
@@ -39,7 +34,6 @@ const Bancas: NextPage<User> = (user) => {
     const [validSite, setValidSite] = useState<string | null>(null);
 
     const [bancaSalva, setBancaSalva] = useState<Bancas[]>([]);
-    const [bancas, setBancas] = useState<Bancas[]>([]);
 
     const siglaValidation = (sigla: string) => {
         return /^.{3,}$/.test(sigla);
@@ -87,7 +81,7 @@ const Bancas: NextPage<User> = (user) => {
         e.preventDefault();
 
         if (!validNome && !validSigla && !validSite) {
-            await api.post('/bancas', {
+            await api.post('/bancas/post/salvaBanca', {
                 id: id,
                 nome: nome,
                 sigla: sigla,
@@ -111,28 +105,29 @@ const Bancas: NextPage<User> = (user) => {
     }
 
     useEffect(() => {
-        const getBancas = async () => {
-            await api.get('/bancas')
+        const getBanca = async () => {
+            await api.get('/bancas/get/bancaPorId', {
+                params: {
+                    id: banca_id,
+                    user_cargo_id: user.cargo_id
+                }
+            })
             .then((response) => {
-                setBancas(response.data);
+                setId(response.data.id);
+                setSigla(response.data.sigla);
+                setNome(response.data.nome);
+                setSite(response.data.site);
             })
             .catch(function(err) {
                 console.log(err);
             })
         }
 
-        getBancas();
-    }, [bancaSalva]);
-
-    const handleEdit = (banca: Bancas) => {
-        setId(banca.id);
-        setSigla(banca.sigla);
-        setNome(banca.nome);
-        setSite(banca.site);
-    }
+        getBanca();
+    }, [bancaSalva, banca_id, user.cargo_id]);
 
     const handleDelete = async (id: number) => {
-        await api.delete('/bancas', {
+        await api.delete('/bancas/delete/bancaPorId', {
             params: {
                 id: id,
                 user_cargo_id: user.cargo_id
@@ -149,7 +144,7 @@ const Bancas: NextPage<User> = (user) => {
     return (
         <>
             <Head>
-                <title>Gabaritou TI | Bancas</title>
+                <title>Gabaritou TI - Bancas Organizadoras</title>
                 <meta name="description" content="Questões de concursos de TI." />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
@@ -159,7 +154,7 @@ const Bancas: NextPage<User> = (user) => {
             <DashboardStyle>
 
                 <QuestaoCardStyle width='60%'>
-                    <h3>Cadastrar Banca</h3>
+                    <h3>Editar Banca</h3>
 
                     <Form>
                         <Label>Sigla da Banca</Label>
@@ -175,37 +170,9 @@ const Bancas: NextPage<User> = (user) => {
                         {validSite && <p className="error">{validSite}</p>}
                     </Form>
 
-                    <Button className="button" onClick={(e) => handleCadastro(e)}>Cadastrar</Button>
+                    <Button className="button" onClick={(e) => handleCadastro(e)}>Salvar</Button>
 
                 </QuestaoCardStyle>
-
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>SIGLA</th>
-                            <th>NOME</th>
-                            <th>SITE</th>
-                            <th>OPÇÕES</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {bancas.map(banca => {
-                            return (
-                                <tr key={banca.id}>
-                                    <td>{banca.id}</td>
-                                    <td>{banca.sigla}</td>
-                                    <td>{banca.nome}</td>
-                                    <td>{banca.site}</td>
-                                    <td>
-                                        <FontAwesomeIcon icon={faPenToSquare} className='edit-icon' onClick={() => handleEdit(banca)} />
-                                        <FontAwesomeIcon icon={faTrashCan} className='delete-icon' onClick={() => handleDelete(banca.id)} />
-                                    </td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </Table>
 
             </DashboardStyle>
 
@@ -231,7 +198,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
     let user: User | undefined;
 
-    await apiClient.get('/usuarios').then(response => {
+    await apiClient.get('/usuarios/get/usuarioPorId').then(response => {
         user = response.data;
     }).catch(function() {
         destroyCookie(ctx, 'gabaritou.token');
@@ -260,4 +227,4 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
 }
 
-export default Bancas;
+export default EditBanca;

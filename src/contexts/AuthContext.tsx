@@ -17,7 +17,7 @@ export function AuthProvider({ children }:any) {
     const [emailNaoConfirmado, setEmailNaoConfirmado] = useState<boolean>(false);
 
     async function login(loginEmail: string, loginSenha: string) {
-        await api.post('/auth', {
+        await api.post('/auth/post/loginInfo', {
             email: loginEmail,
             senha: loginSenha
         })
