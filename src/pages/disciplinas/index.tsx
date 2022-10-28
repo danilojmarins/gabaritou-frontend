@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { Banca } from "../../types/Banca";
 
-const Bancas: NextPage<User> = (user) => {
+const Disciplinas: NextPage<User> = (user) => {
 
     const [bancas, setBancas] = useState<Banca[]>([]);
 
@@ -33,7 +33,7 @@ const Bancas: NextPage<User> = (user) => {
     return (
         <>
             <Head>
-                <title>Gabaritou TI - Bancas Organizadoras</title>
+                <title>Gabaritou TI - Disciplinas</title>
                 <meta name="description" content="Questões de concursos de TI." />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
@@ -41,7 +41,7 @@ const Bancas: NextPage<User> = (user) => {
             <Cabecalho user={user} />
 
             <BancasStyle>
-                <h2>Bancas Organizadoras</h2>
+                <h2>Disciplinas</h2>
                 <PesquisaSimples user={user} page={'bancas'} />
                 {bancas && bancas.map((banca) => {
                     return (
@@ -88,4 +88,4 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
 }
 
-export default Bancas;
+export default Disciplinas;

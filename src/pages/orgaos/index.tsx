@@ -10,30 +10,30 @@ import { User } from "../../types/User";
 import { BancasStyle } from "../../styles/pages/Bancas.style";
 import React, { useEffect, useState } from "react";
 import { api } from "../../services/api";
-import { Banca } from "../../types/Banca";
+import { Orgao } from "../../types/Orgao";
 
-const Bancas: NextPage<User> = (user) => {
+const Orgaos: NextPage<User> = (user) => {
 
-    const [bancas, setBancas] = useState<Banca[]>([]);
+    const [orgaos, setOrgaos] = useState<Orgao[]>([]);
 
     useEffect(() => {
-        const getBancas = async () => {
-            await api.get('/bancas/get/todasBancas')
+        const getOrgaos = async () => {
+            await api.get('/orgaos/get/todosOrgaos')
             .then((response) => {
-                setBancas(response.data);
+                setOrgaos(response.data);
             })
             .catch(function(err) {
                 console.log(err);
             })
         }
 
-        getBancas();
+        getOrgaos();
     }, []);
 
     return (
         <>
             <Head>
-                <title>Gabaritou TI - Bancas Organizadoras</title>
+                <title>Gabaritou TI - Órgãos e Entidades</title>
                 <meta name="description" content="Questões de concursos de TI." />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
@@ -41,12 +41,12 @@ const Bancas: NextPage<User> = (user) => {
             <Cabecalho user={user} />
 
             <BancasStyle>
-                <h2>Bancas Organizadoras</h2>
-                <PesquisaSimples user={user} page={'bancas'} />
-                {bancas && bancas.map((banca) => {
+                <h2>Órgãos / Entidades</h2>
+                <PesquisaSimples user={user} page={'orgaos'} />
+                {orgaos && orgaos.map((orgao) => {
                     return (
-                        <React.Fragment key={banca.id}>
-                            <CardInfo data={banca} user={user} page={'bancas'} />
+                        <React.Fragment key={orgao.id}>
+                            <CardInfo data={orgao} user={user} page={'orgaos'} />
                         </React.Fragment>
                     )
                 })}
@@ -88,4 +88,4 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
 }
 
-export default Bancas;
+export default Orgaos;

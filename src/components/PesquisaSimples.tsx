@@ -5,17 +5,18 @@ import { User } from '../types/User';
 
 interface PesquisaSimplesPops {
     user: User;
+    page: string;
 }
 
 const PesquisaSimples: FC<PesquisaSimplesPops> = (props) => {
 
-    const { user } = props;
+    const { user, page } = props;
 
     return (
         <PesquisaSimplesStyle>
             <div className='top'>
                 <div className='title'>Pesquisa Simples</div>
-                {(user && user.cargo_id === 3) && <Link href='/bancas/add'><p className='txt link'>Adicionar</p></Link>}
+                {(user && user.cargo_id === 3) && <Link href={`/${page}/add`}><p className='txt link'>Adicionar</p></Link>}
             </div>
 
             <div className='options'>

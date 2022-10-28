@@ -7,17 +7,18 @@ import { User } from '../types/User';
 interface CardInfoPops {
     data: Banca;
     user: User;
+    page: string;
 }
 
 const CardInfo: FC<CardInfoPops> = (props) => {
 
-    const { data, user } = props;
+    const { data, user, page } = props;
 
     return (
         <CardInfoStyle>
             <div className="head">
                 <h4 className='link'>{data.sigla} - {data.nome}</h4>
-                {(user && user.cargo_id === 3) && <Link href={`/bancas/add/${data.id}`}><h4 className='link'>Editar</h4></Link>}
+                {(user && user.cargo_id === 3) && <Link href={`/${page}/add/${data.id}`}><h4 className='link'>Editar</h4></Link>}
             </div>
 
             <div className="row">
