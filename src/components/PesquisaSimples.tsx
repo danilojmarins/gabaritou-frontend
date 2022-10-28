@@ -1,12 +1,21 @@
 import Link from 'next/link';
+import { FC } from 'react';
 import { PesquisaSimplesStyle } from '../styles/components/PesquisaSimples.style';
+import { User } from '../types/User';
 
-const PesquisaSimples = () => {
+interface PesquisaSimplesPops {
+    user: User;
+}
+
+const PesquisaSimples: FC<PesquisaSimplesPops> = (props) => {
+
+    const { user } = props;
+
     return (
         <PesquisaSimplesStyle>
             <div className='top'>
                 <div className='title'>Pesquisa Simples</div>
-                <Link href='/bancas/add'><p className='txt link'>Adicionar</p></Link>
+                {(user && user.cargo_id === 3) && <Link href='/bancas/add'><p className='txt link'>Adicionar</p></Link>}
             </div>
 
             <div className='options'>

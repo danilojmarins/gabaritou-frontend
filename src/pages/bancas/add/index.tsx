@@ -11,14 +11,7 @@ import { destroyCookie, parseCookies } from "nookies";
 import Head from "next/head";
 import { User } from "../../../types/User";
 
-const Bancas: NextPage<User> = (user) => {
-
-    interface Bancas {
-        id: number;
-        nome: string;
-        sigla: string;
-        site: string;
-    }
+const BancasAdd: NextPage<User> = (user) => {
 
     const [id, setId] = useState<number | null>(null);
     const [sigla, setSigla] = useState<string>('');
@@ -28,9 +21,6 @@ const Bancas: NextPage<User> = (user) => {
     const [validSigla, setValidSigla] = useState<string | null>(null);
     const [validNome, setValidNome] = useState<string | null>(null);
     const [validSite, setValidSite] = useState<string | null>(null);
-
-    const [bancaSalva, setBancaSalva] = useState<Bancas[]>([]);
-    const [bancas, setBancas] = useState<Bancas[]>([]);
 
     const siglaValidation = (sigla: string) => {
         return /^.{3,}$/.test(sigla);
@@ -93,27 +83,12 @@ const Bancas: NextPage<User> = (user) => {
                 setSigla('');
                 setSite('');
                 setId(null);
-                setBancaSalva(response.data);
             })
             .catch(function(err) {
                 console.log(err);
             })
         }
     }
-
-    useEffect(() => {
-        const getBancas = async () => {
-            await api.get('/bancas/get/todasBancas')
-            .then((response) => {
-                setBancas(response.data);
-            })
-            .catch(function(err) {
-                console.log(err);
-            })
-        }
-
-        getBancas();
-    }, [bancaSalva]);
 
     return (
         <>
@@ -201,4 +176,4 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
 }
 
-export default Bancas;
+export default BancasAdd;

@@ -11,18 +11,12 @@ import { destroyCookie, parseCookies } from "nookies";
 import Head from "next/head";
 import { User } from "../../../types/User";
 import { useRouter } from "next/router";
+import { Banca } from "../../../types/Banca";
 
 const EditBanca: NextPage<User> = (user) => {
 
     const router = useRouter();
     const { banca_id } = router.query;
-
-    interface Bancas {
-        id: number;
-        nome: string;
-        sigla: string;
-        site: string;
-    }
 
     const [id, setId] = useState<number | null>(null);
     const [sigla, setSigla] = useState<string>('');
@@ -33,7 +27,7 @@ const EditBanca: NextPage<User> = (user) => {
     const [validNome, setValidNome] = useState<string | null>(null);
     const [validSite, setValidSite] = useState<string | null>(null);
 
-    const [bancaSalva, setBancaSalva] = useState<Bancas[]>([]);
+    const [bancaSalva, setBancaSalva] = useState<Banca[]>([]);
 
     const siglaValidation = (sigla: string) => {
         return /^.{3,}$/.test(sigla);

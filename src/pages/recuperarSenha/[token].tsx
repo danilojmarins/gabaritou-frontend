@@ -7,6 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import React, { useState } from 'react';
 import { api } from '../../services/api';
+import Cabecalho from '../../components/Cabecalho';
+import Rodape from '../../components/Rodape';
 
 const RecuperarSenha: NextPage = () => {
 
@@ -52,6 +54,9 @@ const RecuperarSenha: NextPage = () => {
 
     return (
         <>
+
+            <Cabecalho />
+
             <LoginStyle>
 
                 <Head>
@@ -90,6 +95,8 @@ const RecuperarSenha: NextPage = () => {
                 </div>
 
             </LoginStyle>
+
+            <Rodape />
         </>
     )
 }

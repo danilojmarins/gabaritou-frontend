@@ -8,8 +8,28 @@ import Rodape from "../../components/Rodape";
 import { getApiClient } from "../../services/axios";
 import { User } from "../../types/User";
 import { BancasStyle } from "../../styles/pages/Bancas.style";
+import React, { useEffect, useState } from "react";
+import { api } from "../../services/api";
+import { Banca } from "../../types/Banca";
 
-const bancas: NextPage<User> = (user) => {
+const Bancas: NextPage<User> = (user) => {
+
+    const [bancas, setBancas] = useState<Banca[]>([]);
+
+    useEffect(() => {
+        const getBancas = async () => {
+            await api.get('/bancas/get/todasBancas')
+            .then((response) => {
+                setBancas(response.data);
+            })
+            .catch(function(err) {
+                console.log(err);
+            })
+        }
+
+        getBancas();
+    }, []);
+
     return (
         <>
             <Head>
@@ -22,12 +42,14 @@ const bancas: NextPage<User> = (user) => {
 
             <BancasStyle>
                 <h2>Bancas Organizadoras</h2>
-                <PesquisaSimples />
-                <CardInfo />
-                <CardInfo />
-                <CardInfo />
-                <CardInfo />
-                <CardInfo />
+                <PesquisaSimples user={user} />
+                {bancas && bancas.map((banca) => {
+                    return (
+                        <React.Fragment key={banca.id}>
+                            <CardInfo data={banca} user={user} />
+                        </React.Fragment>
+                    )
+                })}
             </BancasStyle>
 
             <Rodape />
@@ -66,4 +88,4 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
 }
 
-export default bancas;
+export default Bancas;
