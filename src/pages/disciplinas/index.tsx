@@ -10,24 +10,24 @@ import { User } from "../../types/User";
 import { BancasStyle } from "../../styles/pages/Bancas.style";
 import React, { useEffect, useState } from "react";
 import { api } from "../../services/api";
-import { Banca } from "../../types/Banca";
+import { AreaConhecimento } from "../../types/AreaConhecimento";
 
 const Disciplinas: NextPage<User> = (user) => {
 
-    const [bancas, setBancas] = useState<Banca[]>([]);
+    const [areas, setAreas] = useState<AreaConhecimento[]>([]);
 
     useEffect(() => {
-        const getBancas = async () => {
-            await api.get('/bancas/get/todasBancas')
+        const getAreas = async () => {
+            await api.get('/disciplinas/get/todasAreas')
             .then((response) => {
-                setBancas(response.data);
+                setAreas(response.data);
             })
             .catch(function(err) {
                 console.log(err);
             })
         }
 
-        getBancas();
+        getAreas();
     }, []);
 
     return (
@@ -42,14 +42,16 @@ const Disciplinas: NextPage<User> = (user) => {
 
             <BancasStyle>
                 <h2>Disciplinas</h2>
-                <PesquisaSimples user={user} page={'bancas'} />
-                {bancas && bancas.map((banca) => {
-                    return (
-                        <React.Fragment key={banca.id}>
-                            <CardInfo data={banca} user={user} page={'bancas'} />
-                        </React.Fragment>
-                    )
-                })}
+                <PesquisaSimples user={user} page={'disciplinas'} />
+                <div className="flex">
+                    {areas && areas.map((area) => {
+                        return (
+                            <div key={area.id} className='width'>
+                                <CardInfo area={area} user={user} page={'disciplinas'} bancaOrgao = {null} />
+                            </div>
+                        )
+                    })}
+                </div>
             </BancasStyle>
 
             <Rodape />

@@ -5,6 +5,7 @@ export const CardInfoStyle = styled.div`
     border-radius: 4px;
     border: 1px solid #DEDEDE;
     margin: 10px 0;
+    //width: 49%;
 
     div {
         display: flex;

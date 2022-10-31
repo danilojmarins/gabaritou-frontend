@@ -46,7 +46,7 @@ const Orgaos: NextPage<User> = (user) => {
                 {orgaos && orgaos.map((orgao) => {
                     return (
                         <React.Fragment key={orgao.id}>
-                            <CardInfo data={orgao} user={user} page={'orgaos'} />
+                            <CardInfo bancaOrgao={orgao} user={user} page={'orgaos'} area={null} />
                         </React.Fragment>
                     )
                 })}

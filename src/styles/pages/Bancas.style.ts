@@ -10,4 +10,14 @@ export const BancasStyle = styled.div`
         margin: 10px 0 20px 0;
     }
 
+    .flex {
+        display: flex;
+        justify-content: space-between;
+        flex-flow: row wrap;
+    }
+
+    .width {
+        width: 49.5%;
+    }
+
 `;

@@ -28,7 +28,7 @@ export function AuthProvider({ children }:any) {
             api.defaults.headers['Authorization'] = `Bearer ${response.data.token}`
         })
         .then(() => {
-            Router.push('/dashboard');
+            Router.push('/');
         })
         .catch(function(response) {
             if (response.response.data && response.response.data === 'email not confirmed') {

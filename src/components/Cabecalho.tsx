@@ -65,19 +65,12 @@ const Cabecalho = ({ user }: any) => {
                     <div className='nav-content'>Provas</div>
                     <div className='nav-content'>Concursos</div>
                     <div className='nav-content'>Disciplinas</div>
-                    <div className='nav-content'>Órgãos</div>
-                    <div className='nav-content'>Bancas</div>
-                    {user?.cargo_id === 3 ?
-                        <div className='nav-content' onMouseOver={() => handleMouseOver('adm')} onMouseOut={handleMouseOut}>
-                            ADM
-                            <FontAwesomeIcon className='logout-icon' icon={faGears} />
-
-                            <div className={(isHovering && navContentId === 'adm') ? 'nav-content-dropdown' : 'nav-content-dropdown hide'}>
-                                <p onClick={() => Router.push('/admin/bancas')}>Gerenciar Bancas</p>
-                                <p>Gerenciar Provas</p>  
-                            </div>
-                        </div>
-                    : null}
+                    <Link href={'/orgaos'}>
+                        <div className='nav-content'>Órgãos</div>
+                    </Link>
+                    <Link href={'/bancas'}>
+                        <div className='nav-content'>Bancas</div>
+                    </Link>
                 </div>
             </div>
         </CabecalhoStyle>

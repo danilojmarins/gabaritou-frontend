@@ -59,6 +59,23 @@ export const Input = styled.input`
 
 `;
 
+export const Select = styled.select`
+
+    font-size: 16px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #AAA;
+    display: inline-block;
+    width: 250px;
+    margin-bottom: 5%;
+
+    &:focus {
+        outline: none !important;
+        border: 2px solid ${props => props.theme.colors.widgets};
+    }
+
+`;
+
 export const Form = styled.form`
 
     display: flex;
