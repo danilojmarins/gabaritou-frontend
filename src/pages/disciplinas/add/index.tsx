@@ -70,11 +70,10 @@ const DisciplinasAdd: NextPage<User> = (user) => {
         e.preventDefault();
 
         if (!validDisciplina && !validDescricao && areaId) {
-            await api.post('/orgaos/post/salvaOrgao', {
-                id: id,
-                areaId: areaId,
-                disciplina: disciplina,
+            await api.post('/disciplinas/post/salvaDisciplina', {
+                nome: disciplina,
                 descricao: descricao,
+                area_id: areaId,
             }, {
                 params: {
                     user_cargo_id: user.cargo_id
