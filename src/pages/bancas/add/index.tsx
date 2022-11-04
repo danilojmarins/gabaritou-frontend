@@ -10,6 +10,7 @@ import { getApiClient } from "../../../services/axios";
 import { destroyCookie, parseCookies } from "nookies";
 import Head from "next/head";
 import { User } from "../../../types/User";
+import axios from "axios";
 
 const BancasAdd: NextPage<User> = (user) => {
 
@@ -17,6 +18,8 @@ const BancasAdd: NextPage<User> = (user) => {
     const [sigla, setSigla] = useState<string>('');
     const [nome, setNome] = useState<string>('');
     const [site, setSite] = useState<string>('');
+
+    const [image, setImage] =  useState<File | null>();
 
     const [validSigla, setValidSigla] = useState<string | null>(null);
     const [validNome, setValidNome] = useState<string | null>(null);
@@ -67,12 +70,28 @@ const BancasAdd: NextPage<User> = (user) => {
     const handleCadastro = async (e: React.MouseEvent<HTMLDivElement> | React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!validNome && !validSigla && !validSite) {
+        try {
+            if (!image) return;
+            const formData = new FormData();
+            formData.append('image', image);
+            const { data } = await axios.post('/api/images', formData, {
+                params: {
+                    cargo_id: user.cargo_id,
+                    file_name: sigla
+                }
+            });
+            console.log(data);
+        } catch (error: any) {
+            console.log(error);
+        }
+
+        if (!validNome && !validSigla && !validSite && image) {
             await api.post('/bancas/post/salvaBanca', {
                 id: id,
                 nome: nome,
                 sigla: sigla,
                 site: site,
+                img_url: sigla + image.name.substring(image.name.length, image.name.lastIndexOf('.'))
             }, {
                 params: {
                     user_cargo_id: user.cargo_id
@@ -117,6 +136,14 @@ const BancasAdd: NextPage<User> = (user) => {
                         <Label>Site da Banca</Label>
                         <Input type='url' value={site} onChange={handleSiteChange}></Input>
                         {validSite && <p className="error">{validSite}</p>}
+
+                        <Label>Imagem</Label>
+                        <Input type='file' onChange={(event) => {
+                                if (event.target.files) {
+                                    setImage(event.target.files[0]);
+                                }
+                            }}>
+                        </Input>
                     </Form>
 
                     <Button className="button" onClick={(e) => handleCadastro(e)}>Cadastrar</Button>

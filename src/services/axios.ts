@@ -14,3 +14,17 @@ export function getApiClient(ctx?: any) {
 
     return api;
 }
+
+export function getLocalApi(ctx?: any) {
+    const { 'gabaritou.token': token } = parseCookies(ctx);
+
+    const localApi = axios.create({
+        baseURL: 'http://localhost:3000'
+    });
+
+    if (token) {
+        localApi.defaults.headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    return localApi;
+}
