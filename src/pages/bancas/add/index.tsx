@@ -74,7 +74,7 @@ const BancasAdd: NextPage<User> = (user) => {
             if (!image) return;
             const formData = new FormData();
             formData.append('image', image);
-            const { data } = await axios.post('/api/images', formData, {
+            const data = await axios.post('/api/images', formData, {
                 params: {
                     cargo_id: user.cargo_id,
                     file_name: sigla
@@ -138,7 +138,7 @@ const BancasAdd: NextPage<User> = (user) => {
                         {validSite && <p className="error">{validSite}</p>}
 
                         <Label>Imagem</Label>
-                        <Input type='file' onChange={(event) => {
+                        <Input type='file' name="image" onChange={(event) => {
                                 if (event.target.files) {
                                     setImage(event.target.files[0]);
                                 }
