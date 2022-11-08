@@ -32,7 +32,7 @@ handler.post((req: NextApiRequest, res: NextApiResponse) =>  {
     
     options.uploadDir = path.join(process.cwd(), "/public/images/bancas");
     options.keepExtensions = true;
-    options.maxFileSize = 1 * 1024 * 1024; // 1 MB
+    options.maxFileSize = 0.5 * 1024 * 1024; // 500 KB
     options.filename = (name, ext, path, form) => {
         return fileName + ext;
     };
@@ -44,16 +44,6 @@ handler.post((req: NextApiRequest, res: NextApiResponse) =>  {
             return false
         }
     }
-    
-
-    const isFileValid = (mimetype: string | null) => {
-        const type = mimetype?.split("/").pop();
-        const validTypes = ["jpg", "jpeg", "png"];
-        if (type && validTypes.indexOf(type) === -1) {
-          return false;
-        }
-        return true;
-    };
 
     const form = formidable(options);
     form.parse(req, (err, fields, file) => {
@@ -68,14 +58,6 @@ handler.post((req: NextApiRequest, res: NextApiResponse) =>  {
 
         return res.json({ data: 'ok' });
     })
-    form.onPart = function (part) {
-        if (!isFileValid(part.mimetype)) {
-            return res.status(400).json({
-              status: "Fail",
-              message: "The file type is not a valid type",
-            });
-        }
-    }
 });
 
 export default handler;

@@ -10,6 +10,7 @@ import { getApiClient } from "../../../services/axios";
 import { destroyCookie, parseCookies } from "nookies";
 import Head from "next/head";
 import { User } from "../../../types/User";
+import axios from "axios";
 
 const OrgaosAdd: NextPage<User> = (user) => {
 
@@ -17,10 +18,14 @@ const OrgaosAdd: NextPage<User> = (user) => {
     const [sigla, setSigla] = useState<string>('');
     const [nome, setNome] = useState<string>('');
     const [site, setSite] = useState<string>('');
+    const [image, setImage] =  useState<File | null>();
 
     const [validSigla, setValidSigla] = useState<string | null>(null);
     const [validNome, setValidNome] = useState<string | null>(null);
     const [validSite, setValidSite] = useState<string | null>(null);
+    const [validImage, setValidImage] = useState<string | null>(null);
+
+    const [cadastroError, setCadastroError] = useState<string | null>(null);
 
     const siglaValidation = (sigla: string) => {
         return /^.{3,}$/.test(sigla);
@@ -32,6 +37,14 @@ const OrgaosAdd: NextPage<User> = (user) => {
 
     const siteValidation = (site: string) => {
         return /^.{3,}$/.test(site);
+    }
+
+    const imageValidation = (image: File) => {
+        if (image.type.includes("image") && image.size <= 500000) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     const handleSiglaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,15 +77,42 @@ const OrgaosAdd: NextPage<User> = (user) => {
         setSite(event.target.value);
     };
 
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files){
+            if (!imageValidation(event.target.files[0])) {
+                setValidImage('Arquivo deve ser do tipo imagem e ter menos de 500 KB.');
+            } else {
+                setValidImage(null);
+            }
+
+            setImage(event.target.files[0]);
+        }
+    };
+
     const handleCadastro = async (e: React.MouseEvent<HTMLDivElement> | React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!validNome && !validSigla && !validSite) {
+        try {
+            if (!image || validImage) return;
+            const formData = new FormData();
+            formData.append('image', image);
+            await axios.post('/api/orgaos', formData, {
+                params: {
+                    cargo_id: user.cargo_id,
+                    file_name: sigla
+                }
+            });
+        } catch (error: any) {
+            setCadastroError('Erro ao Cadastrar Banca');
+        }
+
+        if (!validNome && !validSigla && !validSite && !validImage && image) {
             await api.post('/orgaos/post/salvaOrgao', {
                 id: id,
                 nome: nome,
                 sigla: sigla,
                 site: site,
+                img_url: sigla + image.name.substring(image.name.length, image.name.lastIndexOf('.'))
             }, {
                 params: {
                     user_cargo_id: user.cargo_id
@@ -83,9 +123,10 @@ const OrgaosAdd: NextPage<User> = (user) => {
                 setSigla('');
                 setSite('');
                 setId(null);
+                setImage(null);
             })
             .catch(function(err) {
-                console.log(err);
+                setCadastroError('Erro ao Cadastrar Banca');
             })
         }
     }
@@ -117,6 +158,12 @@ const OrgaosAdd: NextPage<User> = (user) => {
                         <Label>Site do Órgão</Label>
                         <Input type='url' value={site} onChange={handleSiteChange}></Input>
                         {validSite && <p className="error">{validSite}</p>}
+
+                        <Label>Imagem</Label>
+                        <Input type='file' name="image" onChange={handleImageChange}></Input>
+                        {validImage && <p className="error">{validImage}</p>}
+
+                        {cadastroError && <p className="error">{cadastroError}</p>}
                     </Form>
 
                     <Button className="button" onClick={(e) => handleCadastro(e)}>Cadastrar</Button>

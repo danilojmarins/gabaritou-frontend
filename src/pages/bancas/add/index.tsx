@@ -1,5 +1,5 @@
 import { GetServerSideProps, NextPage } from "next";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Cabecalho from "../../../components/Cabecalho";
 import Rodape from "../../../components/Rodape";
 import { api } from "../../../services/api";
@@ -18,12 +18,14 @@ const BancasAdd: NextPage<User> = (user) => {
     const [sigla, setSigla] = useState<string>('');
     const [nome, setNome] = useState<string>('');
     const [site, setSite] = useState<string>('');
-
     const [image, setImage] =  useState<File | null>();
 
     const [validSigla, setValidSigla] = useState<string | null>(null);
     const [validNome, setValidNome] = useState<string | null>(null);
     const [validSite, setValidSite] = useState<string | null>(null);
+    const [validImage, setValidImage] = useState<string | null>(null);
+
+    const [cadastroError, setCadastroError] = useState<string | null>(null);
 
     const siglaValidation = (sigla: string) => {
         return /^.{3,}$/.test(sigla);
@@ -35,6 +37,14 @@ const BancasAdd: NextPage<User> = (user) => {
 
     const siteValidation = (site: string) => {
         return /^.{3,}$/.test(site);
+    }
+
+    const imageValidation = (image: File) => {
+        if (image.type.includes("image") && image.size <= 500000) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     const handleSiglaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,25 +77,36 @@ const BancasAdd: NextPage<User> = (user) => {
         setSite(event.target.value);
     };
 
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files){
+            if (!imageValidation(event.target.files[0])) {
+                setValidImage('Arquivo deve ser do tipo imagem e ter menos de 500 KB.');
+            } else {
+                setValidImage(null);
+            }
+
+            setImage(event.target.files[0]);
+        }
+    };
+
     const handleCadastro = async (e: React.MouseEvent<HTMLDivElement> | React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         try {
-            if (!image) return;
+            if (!image || validImage) return;
             const formData = new FormData();
             formData.append('image', image);
-            const data = await axios.post('/api/images', formData, {
+            await axios.post('/api/bancas', formData, {
                 params: {
                     cargo_id: user.cargo_id,
                     file_name: sigla
                 }
             });
-            console.log(data);
         } catch (error: any) {
-            console.log(error);
+            setCadastroError('Erro ao Cadastrar Banca');
         }
 
-        if (!validNome && !validSigla && !validSite && image) {
+        if (!validNome && !validSigla && !validSite && !validImage && image) {
             await api.post('/bancas/post/salvaBanca', {
                 id: id,
                 nome: nome,
@@ -102,9 +123,10 @@ const BancasAdd: NextPage<User> = (user) => {
                 setSigla('');
                 setSite('');
                 setId(null);
+                setImage(null);
             })
             .catch(function(err) {
-                console.log(err);
+                setCadastroError('Erro ao Cadastrar Banca');
             })
         }
     }
@@ -138,12 +160,10 @@ const BancasAdd: NextPage<User> = (user) => {
                         {validSite && <p className="error">{validSite}</p>}
 
                         <Label>Imagem</Label>
-                        <Input type='file' name="image" onChange={(event) => {
-                                if (event.target.files) {
-                                    setImage(event.target.files[0]);
-                                }
-                            }}>
-                        </Input>
+                        <Input type='file' name="image" onChange={handleImageChange}></Input>
+                        {validImage && <p className="error">{validImage}</p>}
+
+                        {cadastroError && <p className="error">{cadastroError}</p>}
                     </Form>
 
                     <Button className="button" onClick={(e) => handleCadastro(e)}>Cadastrar</Button>
