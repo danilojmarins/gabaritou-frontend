@@ -127,3 +127,23 @@ export const Table = styled.table`
     }
 
 `;
+
+export const PageTitle = styled.h2`
+
+    font-weight: 400;
+    color: #638E2A;
+    margin: 10px 0 20px 0;
+
+`;
+
+export const ColocacaoCard = styled.div`
+
+    color: #fff;
+    font-size: 11px;
+    padding: 3px 5px;
+    background-color: #EF7D00;
+    border-radius: 3px;
+    text-align: center;
+    margin: 5px;
+
+`;

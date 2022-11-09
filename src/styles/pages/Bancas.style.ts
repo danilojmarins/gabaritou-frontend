@@ -14,6 +14,7 @@ export const BancasStyle = styled.div`
         display: flex;
         justify-content: space-between;
         flex-flow: row wrap;
+        align-items: start;
     }
 
     .width {

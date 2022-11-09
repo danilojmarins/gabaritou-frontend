@@ -1,0 +1,37 @@
+[
+    {
+        "banca": "FUNDEP",
+        "corretas": 43,
+        "erradas": 23
+    },
+    {
+        "banca": "CETRO",
+        "corretas": 5,
+        "erradas": 20
+    },
+    {
+        "banca": "FUNCAB",
+        "corretas": 10,
+        "erradas": 10
+    },
+    {
+        "banca": "TJPR",
+        "corretas": 100,
+        "erradas": 5
+    },
+    {
+        "banca": "UFC",
+        "corretas": 17,
+        "erradas": 20
+    },
+    {
+        "banca": "BIO RIO",
+        "corretas": 52,
+        "erradas": 25
+    },
+    {
+        "banca": "NUCEPE",
+        "corretas": 10,
+        "erradas": 24
+    }
+]
