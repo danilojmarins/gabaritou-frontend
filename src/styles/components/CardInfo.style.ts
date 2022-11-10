@@ -68,15 +68,21 @@ export const CardInfoStyle = styled.div.attrs((props: {text: string, rowBack: st
     }
 
     .positivo {
-        color: #8cc63e;
+        color: #8CC63E;
     }
 
     .medio {
-        color: #d1c700;
+        color: #D1C700;
     }
 
     .negativo {
-        color: #e12b2b;
+        color: #E12B2B;
+    }
+
+    .grafico {
+        width: 1000px;
+        margin: auto;
+        padding: 30px 0;
     }
  
 `;
