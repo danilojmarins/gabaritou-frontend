@@ -1,5 +1,6 @@
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import { destroyCookie, parseCookies } from "nookies";
 import Cabecalho from "../components/Cabecalho";
 import Rodape from "../components/Rodape";
@@ -64,7 +65,9 @@ const Perfil: NextPage<User> = (user) => {
                             <p><span className="dado">Minhas Estatísticas</span></p>
                         </div>
                         <div className="row-perfil">
-                            <p className="link">Banca</p>
+                            <Link href={'/estatisticas/banca'}>
+                                <p className="link">Banca</p>
+                            </Link>
                             <p className="link">Disciplina</p>
                         </div>
                         <div className="row-perfil">

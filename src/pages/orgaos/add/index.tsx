@@ -27,6 +27,8 @@ const OrgaosAdd: NextPage<User> = (user) => {
 
     const [cadastroError, setCadastroError] = useState<string | null>(null);
 
+    console.log(image)
+
     const siglaValidation = (sigla: string) => {
         return /^.{3,}$/.test(sigla);
     }

@@ -14,6 +14,8 @@ import Rodape from "../../components/Rodape";
 
 const EstatisticasBanca: NextPage<User> = (user) => {
 
+    
+
     const [dados, setDados] = useState({
         labels: estatisticas.map((dado) => dado.banca),
         datasets: [{

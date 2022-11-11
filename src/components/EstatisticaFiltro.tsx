@@ -1,9 +1,10 @@
-import { FC } from 'react';
-import { Button } from '../styles/components/MinimalComponents.style';
+import { useState } from 'react';
 import { PesquisaSimplesStyle } from '../styles/components/PesquisaSimples.style';
-import { User } from '../types/User';
 
-const EstatisticaFiltro: FC = () => {
+const EstatisticaFiltro = () => {
+
+    const [from, setFrom] = useState<Date>();
+    const [to, setTo] = useState<Date>();
 
     return (
         <PesquisaSimplesStyle>
@@ -14,9 +15,9 @@ const EstatisticaFiltro: FC = () => {
             <div className='options'>
                 <div>
                     <label className='txt'>De:</label>
-                    <input className='search-input' type='date'></input>
+                    <input className='search-input' type='date' onChange={(e) => setFrom(new Date(e.target.value))}></input>
                     <label className='txt'>Até:</label>
-                    <input className='search-input' type='date'></input>
+                    <input className='search-input' type='date' onChange={(e) => setTo(new Date(e.target.value))}></input>
                 </div>
 
                 <div>
