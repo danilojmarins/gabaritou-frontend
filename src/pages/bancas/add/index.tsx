@@ -11,6 +11,7 @@ import { destroyCookie, parseCookies } from "nookies";
 import Head from "next/head";
 import { User } from "../../../types/User";
 import axios from "axios";
+import CarregamentoWidget from "../../../components/CarregamentoWidget";
 
 const BancasAdd: NextPage<User> = (user) => {
 
@@ -26,6 +27,8 @@ const BancasAdd: NextPage<User> = (user) => {
     const [validImage, setValidImage] = useState<string | null>(null);
 
     const [cadastroError, setCadastroError] = useState<string | null>(null);
+
+    const [carregando, setCarregando] = useState<boolean>(false);
 
     const siglaValidation = (sigla: string) => {
         return /^.{3,}$/.test(sigla);
@@ -89,46 +92,55 @@ const BancasAdd: NextPage<User> = (user) => {
         }
     };
 
-    const handleCadastro = async (e: React.MouseEvent<HTMLDivElement> | React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
+    const handleCadastro = async () => {
+        
         try {
+            setCarregando(true);
+
             if (!image || validImage) return;
+
             const formData = new FormData();
             formData.append('image', image);
+
             await axios.post('/api/bancas', formData, {
                 params: {
                     cargo_id: user.cargo_id,
                     file_name: sigla
                 }
-            });
+            })
+            .then(() => {
+                if (!validNome && !validSigla && !validSite && !validImage && image) {
+            
+                    api.post('/bancas/post/salvaBanca', {
+                        id: id,
+                        nome: nome,
+                        sigla: sigla,
+                        site: site,
+                        img_url: sigla + image.name.substring(image.name.length, image.name.lastIndexOf('.'))
+                    }, {
+                        params: {
+                            user_cargo_id: user.cargo_id
+                        }
+                    })
+                    .then(() => {
+                        setNome('');
+                        setSigla('');
+                        setSite('');
+                        setId(null);
+                        setImage(null);
+                    })
+                    .catch(() => {
+                        setCadastroError('Erro ao Cadastrar Banca');
+                    })
+                }
+            })
+
+            setCarregando(false);
+            
         } catch (error: any) {
             setCadastroError('Erro ao Cadastrar Banca');
         }
-
-        if (!validNome && !validSigla && !validSite && !validImage && image) {
-            await api.post('/bancas/post/salvaBanca', {
-                id: id,
-                nome: nome,
-                sigla: sigla,
-                site: site,
-                img_url: sigla + image.name.substring(image.name.length, image.name.lastIndexOf('.'))
-            }, {
-                params: {
-                    user_cargo_id: user.cargo_id
-                }
-            })
-            .then((response) => {
-                setNome('');
-                setSigla('');
-                setSite('');
-                setId(null);
-                setImage(null);
-            })
-            .catch(function(err) {
-                setCadastroError('Erro ao Cadastrar Banca');
-            })
-        }
+        
     }
 
     return (
@@ -138,6 +150,8 @@ const BancasAdd: NextPage<User> = (user) => {
                 <meta name="description" content="Questões de concursos de TI." />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
+
+            {carregando && <CarregamentoWidget />}
 
             <Cabecalho user={user} />
 
@@ -166,7 +180,7 @@ const BancasAdd: NextPage<User> = (user) => {
                         {cadastroError && <p className="error">{cadastroError}</p>}
                     </Form>
 
-                    <Button className="button" onClick={(e) => handleCadastro(e)}>Cadastrar</Button>
+                    <Button className="button" onClick={handleCadastro}>Cadastrar</Button>
 
                 </QuestaoCardStyle>
 

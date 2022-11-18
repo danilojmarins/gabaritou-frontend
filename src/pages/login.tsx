@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Modal } from '../styles/components/Modal.style';
 import { api } from '../services/api';
 import { parseCookies } from 'nookies';
+import CarregamentoWidget from '../components/CarregamentoWidget';
 
 const Login: NextPage = ({ user }: any) => {
 
@@ -38,10 +39,14 @@ const Login: NextPage = ({ user }: any) => {
   const [showLoginPass, setShowLoginPass] = useState<boolean>(false);
   const [showSignPass, setShowSignPass] = useState<boolean>(false);
 
+  const [carregando, setCarregando] = useState<boolean>(false);
+
   const { login, loginError, emailNaoConfirmado } = useContext(AuthContext);
 
   const handleLogin = async () => {
+    setCarregando(true);
     await login(loginEmail, loginSenha);
+    setCarregando(false);
   }
 
   const handleSignIn = async (e: React.MouseEvent<HTMLDivElement> | React.FormEvent<HTMLFormElement>) => {
@@ -50,11 +55,13 @@ const Login: NextPage = ({ user }: any) => {
 
     if (!validPassword && !validEmail) {
       try {
+        setCarregando(true);
         await api.post('/usuarios/post/salvaUsuario', {
           nome: signNome,
           email: signEmail,
           senha: signSenha
         });
+        setCarregando(false);
         setModalOpen(true);
       }
       catch(error: any) {
@@ -74,9 +81,11 @@ const Login: NextPage = ({ user }: any) => {
 
     if (!validRecuperaSenhaEmail) {
       try {
+        setCarregando(true);
         await api.post('/usuarios/post/esqueceuSenha', {
           email: recuperaSenhaEmail
         });
+        setCarregando(false);
         setEmailRecuperacaoEnviado(true);
       }
       catch(error: any) {
@@ -144,6 +153,8 @@ const Login: NextPage = ({ user }: any) => {
         <meta name="description" content="Questões de concursos de TI." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      {carregando && <CarregamentoWidget />}
 
       <Cabecalho user={user} />
 

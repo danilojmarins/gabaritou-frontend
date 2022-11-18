@@ -11,6 +11,7 @@ import { BancasStyle } from "../../styles/pages/Bancas.style";
 import React, { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { Banca } from "../../types/Banca";
+import CarregamentoWidget from "../../components/CarregamentoWidget";
 
 const Bancas: NextPage<User> = (user) => {
 
@@ -37,6 +38,8 @@ const Bancas: NextPage<User> = (user) => {
                 <meta name="description" content="Questões de concursos de TI." />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
+
+            {!bancas && <CarregamentoWidget />}
 
             <Cabecalho user={user} />
 

@@ -13,6 +13,7 @@ import { User } from "../../../types/User";
 import { useRouter } from "next/router";
 import { Banca } from "../../../types/Banca";
 import axios from "axios";
+import CarregamentoWidget from "../../../components/CarregamentoWidget";
 
 const EditBanca: NextPage<User> = (user) => {
 
@@ -33,6 +34,8 @@ const EditBanca: NextPage<User> = (user) => {
     const [cadastroError, setCadastroError] = useState<string | null>(null);
 
     const [bancaSalva, setBancaSalva] = useState<Banca[]>([]);
+
+    const [carregando, setCarregando] = useState<boolean>(false);
 
     const siglaValidation = (sigla: string) => {
         return /^.{3,}$/.test(sigla);
@@ -99,6 +102,8 @@ const EditBanca: NextPage<User> = (user) => {
     const handleCadastro = async (e: React.MouseEvent<HTMLDivElement> | React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        setCarregando(true);
+
         try {
             if (!image || validImage) return;
             const formData = new FormData();
@@ -137,10 +142,13 @@ const EditBanca: NextPage<User> = (user) => {
                 setCadastroError('Erro ao Cadastrar Banca');
             })
         }
+
+        setCarregando(false);
     }
 
     useEffect(() => {
         const getBanca = async () => {
+            setCarregando(true);
             await api.get('/bancas/get/bancaPorId', {
                 params: {
                     id: banca_id,
@@ -152,6 +160,7 @@ const EditBanca: NextPage<User> = (user) => {
                 setSigla(response.data.sigla);
                 setNome(response.data.nome);
                 setSite(response.data.site);
+                setCarregando(false);
             })
             .catch(function(err) {
                 console.log(err);
@@ -183,6 +192,8 @@ const EditBanca: NextPage<User> = (user) => {
                 <meta name="description" content="Questões de concursos de TI." />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
+
+            {carregando && <CarregamentoWidget />}
 
             <Cabecalho user={user} />
 
