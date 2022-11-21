@@ -86,8 +86,16 @@ export const Form = styled.form`
 
     .error {
         font-size: 14px;
-        color: #FF0000;
+        color: ${props => props.theme.colors.secondary};
         margin-bottom: 8%;
+        display: flex;
+        align-items: center;
+    }
+
+    .error-icon {
+        color: ${props => props.theme.colors.secondary};
+        width: 20px;
+        margin-right: 10px;
     }
 
 `;

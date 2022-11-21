@@ -12,10 +12,12 @@ import Head from "next/head";
 import { User } from "../../../types/User";
 import axios from "axios";
 import CarregamentoWidget from "../../../components/CarregamentoWidget";
+import ResponseWidget from "../../../components/ResponseWidget";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 const BancasAdd: NextPage<User> = (user) => {
 
-    const [id, setId] = useState<number | null>(null);
     const [sigla, setSigla] = useState<string>('');
     const [nome, setNome] = useState<string>('');
     const [site, setSite] = useState<string>('');
@@ -29,6 +31,7 @@ const BancasAdd: NextPage<User> = (user) => {
     const [cadastroError, setCadastroError] = useState<string | null>(null);
 
     const [carregando, setCarregando] = useState<boolean>(false);
+    const [success, setSucccess] = useState<boolean>(false);
 
     const siglaValidation = (sigla: string) => {
         return /^.{3,}$/.test(sigla);
@@ -43,7 +46,7 @@ const BancasAdd: NextPage<User> = (user) => {
     }
 
     const imageValidation = (image: File) => {
-        if (image.type.includes("image") && image.size <= 500000) {
+        if (image && image.type.includes("image") && image.size <= 500000) {
             return true;
         } else {
             return false;
@@ -93,26 +96,26 @@ const BancasAdd: NextPage<User> = (user) => {
     };
 
     const handleCadastro = async () => {
+
+        if (!validNome && !validSigla && !validSite && !validImage && image) {
         
-        try {
-            setCarregando(true);
+            try {
 
-            if (!image || validImage) return;
+                const formData = new FormData();
+                formData.append('image', image);
 
-            const formData = new FormData();
-            formData.append('image', image);
+                setCarregando(true);
+                setSucccess(false);
 
-            await axios.post('/api/bancas', formData, {
-                params: {
-                    cargo_id: user.cargo_id,
-                    file_name: sigla
-                }
-            })
-            .then(() => {
-                if (!validNome && !validSigla && !validSite && !validImage && image) {
-            
+                await axios.post('/api/bancas', formData, {
+                    params: {
+                        cargo_id: user.cargo_id,
+                        file_name: sigla
+                    }
+                })
+                .then(() => {
+                    
                     api.post('/bancas/post/salvaBanca', {
-                        id: id,
                         nome: nome,
                         sigla: sigla,
                         site: site,
@@ -126,21 +129,20 @@ const BancasAdd: NextPage<User> = (user) => {
                         setNome('');
                         setSigla('');
                         setSite('');
-                        setId(null);
                         setImage(null);
+                        setSucccess(true);
+                        setCadastroError(null);
                     })
                     .catch(() => {
                         setCadastroError('Erro ao Cadastrar Banca');
                     })
-                }
-            })
-
-            setCarregando(false);
-            
-        } catch (error: any) {
-            setCadastroError('Erro ao Cadastrar Banca');
+                    
+                })
+                setCarregando(false);
+            } catch (error: any) {
+                setCadastroError('Erro ao Cadastrar Banca');
+            }
         }
-        
     }
 
     return (
@@ -152,6 +154,8 @@ const BancasAdd: NextPage<User> = (user) => {
             </Head>
 
             {carregando && <CarregamentoWidget />}
+
+            {success && <ResponseWidget />}
 
             <Cabecalho user={user} />
 
@@ -177,7 +181,12 @@ const BancasAdd: NextPage<User> = (user) => {
                         <Input type='file' name="image" onChange={handleImageChange}></Input>
                         {validImage && <p className="error">{validImage}</p>}
 
-                        {cadastroError && <p className="error">{cadastroError}</p>}
+                        {cadastroError &&
+                            <p className="error">
+                                <FontAwesomeIcon className="error-icon" icon={faTriangleExclamation} />
+                                {cadastroError}
+                            </p>
+                        }
                     </Form>
 
                     <Button className="button" onClick={handleCadastro}>Cadastrar</Button>

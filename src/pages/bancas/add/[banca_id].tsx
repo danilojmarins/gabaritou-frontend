@@ -14,6 +14,9 @@ import { useRouter } from "next/router";
 import { Banca } from "../../../types/Banca";
 import axios from "axios";
 import CarregamentoWidget from "../../../components/CarregamentoWidget";
+import ResponseWidget from "../../../components/ResponseWidget";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 const EditBanca: NextPage<User> = (user) => {
 
@@ -36,6 +39,7 @@ const EditBanca: NextPage<User> = (user) => {
     const [bancaSalva, setBancaSalva] = useState<Banca[]>([]);
 
     const [carregando, setCarregando] = useState<boolean>(false);
+    const [success, setSuccess] = useState<boolean>(false);
 
     const siglaValidation = (sigla: string) => {
         return /^.{3,}$/.test(sigla);
@@ -50,7 +54,7 @@ const EditBanca: NextPage<User> = (user) => {
     }
 
     const imageValidation = (image: File) => {
-        if (image.type.includes("image") && image.size <= 500000) {
+        if (image && image.type.includes("image") && image.size <= 500000) {
             return true;
         } else {
             return false;
@@ -99,51 +103,60 @@ const EditBanca: NextPage<User> = (user) => {
         }
     };
 
-    const handleCadastro = async (e: React.MouseEvent<HTMLDivElement> | React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        setCarregando(true);
-
-        try {
-            if (!image || validImage) return;
-            const formData = new FormData();
-            formData.append('image', image);
-            await axios.post('/api/bancas', formData, {
-                params: {
-                    cargo_id: user.cargo_id,
-                    file_name: sigla
-                }
-            });
-        } catch (error: any) {
-            setCadastroError('Erro ao Cadastrar Banca');
-        }
+    const handleEdit = async () => {
 
         if (!validNome && !validSigla && !validSite && !validImage && image) {
-            await api.post('/bancas/post/salvaBanca', {
-                id: id,
-                nome: nome,
-                sigla: sigla,
-                site: site,
-                img_url: sigla + image.name.substring(image.name.length, image.name.lastIndexOf('.'))
-            }, {
-                params: {
-                    user_cargo_id: user.cargo_id
-                }
-            })
-            .then((response) => {
-                setNome('');
-                setSigla('');
-                setSite('');
-                setId(null);
-                setBancaSalva(response.data);
-                setImage(null);
-            })
-            .catch(function(err) {
+        
+            try {
+
+                const formData = new FormData();
+                formData.append('image', image);
+
+                setCarregando(true);
+                setSuccess(false);
+
+                await axios.post('/api/bancas', formData, {
+                    params: {
+                        cargo_id: user.cargo_id,
+                        file_name: sigla
+                    }
+                })
+                .then(() => {
+
+                    api.put('/bancas/update/bancaPorId', {
+                        nome: nome,
+                        sigla: sigla,
+                        site: site,
+                        img_url: sigla + image.name.substring(image.name.length, image.name.lastIndexOf('.'))
+                    }, {
+                        params: {
+                            id: id,
+                            user_cargo_id: user.cargo_id
+                        }
+                    })
+                    .then((response) => {
+                        setNome('');
+                        setSigla('');
+                        setSite('');
+                        setId(null);
+                        setBancaSalva(response.data);
+                        setImage(null);
+                        setCarregando(false);
+                        setCadastroError(null);
+                        setSuccess(true);
+                    })
+                    .catch(function() {
+                        setCadastroError('Erro ao Cadastrar Banca');
+                    })
+
+                })
+                setCarregando(false);
+            } catch (error: any) {
                 setCadastroError('Erro ao Cadastrar Banca');
-            })
+            }
+            
         }
 
-        setCarregando(false);
     }
 
     useEffect(() => {
@@ -195,6 +208,8 @@ const EditBanca: NextPage<User> = (user) => {
 
             {carregando && <CarregamentoWidget />}
 
+            {success && <ResponseWidget />}
+
             <Cabecalho user={user} />
 
             <DashboardStyle>
@@ -219,10 +234,15 @@ const EditBanca: NextPage<User> = (user) => {
                         <Input type='file' name="image" onChange={handleImageChange}></Input>
                         {validImage && <p className="error">{validImage}</p>}
 
-                        {cadastroError && <p className="error">{cadastroError}</p>}
+                        {cadastroError &&
+                            <p className="error">
+                                <FontAwesomeIcon className="error-icon" icon={faTriangleExclamation} />
+                                {cadastroError}
+                            </p>
+                        }
                     </Form>
 
-                    <Button className="button" onClick={(e) => handleCadastro(e)}>Salvar</Button>
+                    <Button className="button" onClick={handleEdit}>Salvar</Button>
 
                 </QuestaoCardStyle>
 
