@@ -1,14 +1,15 @@
 import Link from 'next/link';
-import { FC } from 'react';
 import { PesquisaSimplesStyle } from '../styles/components/PesquisaSimples.style';
 import { User } from '../types/User';
 
-interface PesquisaSimplesPops {
+interface PesquisaSimplesProps {
     user: User;
     page: string;
+    getTermoPesquisa: (termoPesquisa: string) => void;
+    getNumResultados: (numResultados: number) => void;
 }
 
-const PesquisaSimples: FC<PesquisaSimplesPops> = (props) => {
+const PesquisaSimples = (props: PesquisaSimplesProps) => {
 
     const { user, page } = props;
 
@@ -21,17 +22,17 @@ const PesquisaSimples: FC<PesquisaSimplesPops> = (props) => {
 
             <div className='options'>
                 <div>
-                    <input className='search-input' type='text' placeholder='Pesquisar...'></input>
-                    <input className='submit-input' type='submit' value='Pesquisar'></input>
+                    <input className='search-input' type='text' placeholder='Pesquisar...' onChange={(e) => {props.getTermoPesquisa(e.target.value)}}></input>
+                    <input className='submit-input' type='submit' value='Pesquisar' onClick={() => {}}></input>
                 </div>
 
                 <div>
                     <label className='txt'>Resultados por página:</label>
-                    <select>
-                        <option>5</option>
-                        <option>10</option>
-                        <option>15</option>
-                        <option>20</option>
+                    <select onChange={(e) => {props.getNumResultados(parseInt(e.target.value))}}>
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={15}>15</option>
+                        <option value={20}>20</option>
                     </select>
                 </div>
             </div>

@@ -155,3 +155,38 @@ export const ColocacaoCard = styled.div`
     margin: 5px;
 
 `;
+
+export const PaginateStyle = styled.div`
+
+    margin: 50px auto;
+
+    .pagination-btns {
+        width: auto 90%;
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        flex-flow: row wrap;
+        margin: 10px auto;
+        margin-left: -10%;
+    }
+
+    .pagination-btns a {
+        padding: 10px;
+        border: solid 1px ${props => props.theme.colors.primary};
+        border-radius: 5px;
+        margin: 8px;
+        cursor: pointer;
+    }
+
+    .active-btn a {
+        background-color: ${props => props.theme.colors.primary};;
+        color: #FFF;
+    }
+
+    .break a {
+        border: none;
+        cursor: default;
+        margin: 0;
+    }
+
+`;

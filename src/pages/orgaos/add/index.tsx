@@ -134,13 +134,13 @@ const OrgaosAdd: NextPage<User> = (user) => {
                         setCadastroError(null);
                     })
                     .catch(function(err) {
-                        setCadastroError('Erro ao Cadastrar Banca');
+                        setCadastroError('Erro ao Cadastrar Órgão');
                     })
 
                 })
                 setCarregando(false);
             } catch (error: any) {
-                setCadastroError('Erro ao Cadastrar Banca');
+                setCadastroError('Erro ao Cadastrar Órgão');
             }
   
         }

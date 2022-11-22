@@ -129,7 +129,6 @@ const BancasAdd: NextPage<User> = (user) => {
                         setNome('');
                         setSigla('');
                         setSite('');
-                        setImage(null);
                         setSucccess(true);
                         setCadastroError(null);
                     })

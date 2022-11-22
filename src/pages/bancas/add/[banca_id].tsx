@@ -146,13 +146,13 @@ const EditBanca: NextPage<User> = (user) => {
                         setSuccess(true);
                     })
                     .catch(function() {
-                        setCadastroError('Erro ao Cadastrar Banca');
+                        setCadastroError('Erro ao Atualizar Banca');
                     })
 
                 })
                 setCarregando(false);
             } catch (error: any) {
-                setCadastroError('Erro ao Cadastrar Banca');
+                setCadastroError('Erro ao Atualizar Banca');
             }
             
         }

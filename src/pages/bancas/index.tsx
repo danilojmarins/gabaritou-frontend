@@ -12,10 +12,19 @@ import React, { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { Banca } from "../../types/Banca";
 import CarregamentoWidget from "../../components/CarregamentoWidget";
+import ReactPaginate from "react-paginate";
+import { PaginateStyle } from "../../styles/components/MinimalComponents.style";
 
 const Bancas: NextPage<User> = (user) => {
 
     const [bancas, setBancas] = useState<Banca[]>([]);
+    const [termoPesquisa, setTermoPesquisa] = useState<string>('');
+    const [numResultados, setNumResultados] = useState<number>(5);
+    const [paginaNum, setPaginaNum] = useState<number>(0);
+
+    const resultadosVisitados: number = paginaNum * numResultados;
+
+    const paginasCount: number = Math.ceil(bancas.length / numResultados);
 
     useEffect(() => {
         const getBancas = async () => {
@@ -31,6 +40,25 @@ const Bancas: NextPage<User> = (user) => {
         getBancas();
     }, []);
 
+    useEffect(() => {
+        if (paginaNum > paginasCount) {
+            setPaginaNum(0);
+        }
+    }, [paginaNum, paginasCount]);
+
+    const getTermoPesquisa = (termoPesquisa: string) => {
+        setTermoPesquisa(termoPesquisa);
+    }
+
+    const getNumResultados = (numResultados: number) => {
+        setNumResultados(numResultados);
+    }
+
+    const changePage = (selectedItem: {selected: number}) => {
+        setPaginaNum(selectedItem.selected);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
     return (
         <>
             <Head>
@@ -45,14 +73,46 @@ const Bancas: NextPage<User> = (user) => {
 
             <BancasStyle>
                 <h2>Bancas Organizadoras</h2>
-                <PesquisaSimples user={user} page={'bancas'} />
-                {bancas && bancas.map((banca) => {
+
+                <PesquisaSimples 
+                    user={user}
+                    page={'bancas'}
+                    getTermoPesquisa={getTermoPesquisa}
+                    getNumResultados={getNumResultados}
+                />
+
+                {bancas && bancas.filter((value) => {
+                    if (termoPesquisa === '' || termoPesquisa === undefined) {
+                        return value;
+                    }
+                    else if (value.nome.toLowerCase().includes(termoPesquisa.toLowerCase()) || value.sigla.toLowerCase().includes(termoPesquisa.toLowerCase()) || value.site.toLowerCase().includes(termoPesquisa.toLowerCase())) {
+                        return value;
+                    }
+                    else {
+                        return null;
+                    }
+                }).slice(resultadosVisitados, (resultadosVisitados + numResultados)).map((banca) => {
                     return (
                         <React.Fragment key={banca.id}>
                             <CardInfo bancaOrgao={banca} user={user} page={'bancas'} area={null} />
                         </React.Fragment>
                     )
                 })}
+
+                <PaginateStyle>
+
+                    <ReactPaginate 
+                        previousLabel={"Anterior"}
+                        nextLabel={"Próximo"}
+                        pageCount={paginasCount}
+                        onPageChange={changePage}
+                        containerClassName={"pagination-btns"}
+                        disabledClassName={"disbaled-btn"}
+                        activeClassName={"active-btn"}
+                        breakClassName={"break"}
+                    />
+
+                </PaginateStyle>
             </BancasStyle>
 
             <Rodape />
