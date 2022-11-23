@@ -13,6 +13,27 @@ export const CardInfoStyle = styled.div.attrs((props: {text: string, rowBack: st
         align-items: center;
     }
 
+    p {
+        width: 200px;
+    }
+
+    .left {
+        text-align: left;
+    }
+
+    .center {
+        text-align: center;
+    }
+
+    .right {
+        text-align: right;
+    }
+
+    .option {
+        width: auto;
+        margin: 0 5px;
+    }
+
     .head {
         background-color: #F3F3F3;
         color: ${props => (props.text ? '#515151' : '#1B7E5A')};

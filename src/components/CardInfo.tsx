@@ -4,10 +4,10 @@ import { CardInfoStyle } from '../styles/components/CardInfo.style';
 import { Banca } from '../types/Banca';
 import { User } from '../types/User';
 import { Orgao } from '../types/Orgao';
-import { AreaConhecimento } from '../types/AreaConhecimento';
+import { Disciplina } from '../types/Disciplina';
 
 interface CardInfoProps {
-    area: AreaConhecimento | null;
+    disciplina: Disciplina | null;
     bancaOrgao: Banca | Orgao | null;
     user: User;
     page: string;
@@ -15,7 +15,7 @@ interface CardInfoProps {
 
 const CardInfo: FC<CardInfoProps> = (props) => {
 
-    const { area, bancaOrgao, user, page } = props;
+    const { disciplina, bancaOrgao, user, page } = props;
 
     if (page === 'bancas' || page === 'orgaos') {
         return (
@@ -42,8 +42,8 @@ const CardInfo: FC<CardInfoProps> = (props) => {
         return (
             <CardInfoStyle>
                 <div className="head">
-                    <h4 className='link'>{area?.nome}</h4>
-                    {(user && user.cargo_id === 3) && <Link href={`/${page}/add/${area?.id}`}><h4 className='link'>Editar</h4></Link>}
+                    <Link href={`/${page}/${disciplina?.id}`}><h4 className='link'>{disciplina?.nome}</h4></Link>
+                    {(user && user.cargo_id === 3) && <Link href={`/${page}/add/${disciplina?.id}`}><h4 className='link'>Editar</h4></Link>}
                 </div>
 
                 <div className="row last">

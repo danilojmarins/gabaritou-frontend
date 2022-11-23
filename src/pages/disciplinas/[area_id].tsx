@@ -15,6 +15,7 @@ import { BancasStyle } from "../../styles/pages/Bancas.style";
 import { CardInfoStyle } from "../../styles/components/CardInfo.style";
 import { AreaConhecimento } from "../../types/AreaConhecimento";
 import { Disciplina } from "../../types/Disciplina";
+import Link from "next/link";
 
 const EditDisciplina: NextPage<User> = (user) => {
 
@@ -26,7 +27,7 @@ const EditDisciplina: NextPage<User> = (user) => {
 
     useEffect(() => {
         const getArea = async () => {
-            await api.get('/disciplinas/get/areaPorId', {
+            await api.get('/areas/get/areaPorId', {
                 params: {
                     id: area_id,
                     user_cargo_id: user.cargo_id
@@ -81,8 +82,10 @@ const EditDisciplina: NextPage<User> = (user) => {
                     {disciplinas && disciplinas.map((disciplina, i) => {
                         return (
                             <div className={(i !== (disciplinas.length - 1)) ? "row" : "row last"} key={disciplina.id}>
-                                <p>{disciplina.nome}</p>
-                                <p className="link">{'123'} questões</p>
+                                <p className="left">{disciplina.nome}</p>
+                                <p className="link center">{'123'} questões</p>
+                                {user.cargo_id === 3 ? <Link href={'/disciplinas/add'}><p className="link center">Editar</p></Link> : <></>}
+                                {user.cargo_id === 3 ? <p className="link right">Excluir</p> : <></>}
                             </div>
                         )
                     })}
