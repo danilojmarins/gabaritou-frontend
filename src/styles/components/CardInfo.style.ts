@@ -14,7 +14,7 @@ export const CardInfoStyle = styled.div.attrs((props: {text: string, rowBack: st
     }
 
     p {
-        width: 200px;
+        width: 230px;
     }
 
     .left {

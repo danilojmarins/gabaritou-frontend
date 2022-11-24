@@ -139,15 +139,16 @@ const EditOrgao: NextPage<User> = (user) => {
                         setImage(null);
                         setSuccess(true);
                         setCadastroError(null);
+                        router.push('orgaos');
                     })
                     .catch(function(err) {
-                        setCadastroError('Erro ao Atualizar Órgão');
+                        setCadastroError('Erro ao editar órgão.');
                     })
 
                 })
                 setCarregando(false);
             } catch (error: any) {
-                setCadastroError('Erro ao Atualizar Órgão');
+                setCadastroError('Erro ao editar órgão.');
             }
 
         }
@@ -155,7 +156,7 @@ const EditOrgao: NextPage<User> = (user) => {
     }
 
     useEffect(() => {
-        const getBanca = async () => {
+        const getOrgao = async () => {
             await api.get('/orgaos/get/orgaoPorId', {
                 params: {
                     id: orgao_id,
@@ -173,20 +174,8 @@ const EditOrgao: NextPage<User> = (user) => {
             })
         }
 
-        getBanca();
+        getOrgao();
     }, [orgao_id, user.cargo_id]);
-
-    const handleDelete = async (id: number) => {
-        await api.delete('/orgaos/delete/orgaoPorId', {
-            params: {
-                id: id,
-                user_cargo_id: user.cargo_id
-            }
-        })
-        .catch(function(err) {
-            console.log(err);
-        })
-    }
 
     return (
         <>

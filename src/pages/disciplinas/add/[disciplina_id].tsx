@@ -11,14 +11,18 @@ import { destroyCookie, parseCookies } from "nookies";
 import Head from "next/head";
 import { User } from "../../../types/User";
 import { AreaConhecimento } from "../../../types/AreaConhecimento";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { useRouter } from "next/router";
 import CarregamentoWidget from "../../../components/CarregamentoWidget";
 import ResponseWidget from "../../../components/ResponseWidget";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
 const DisciplinasAdd: NextPage<User> = (user) => {
 
-    const [areaId, setAreaId] = useState<string | null>(null);
+    const router = useRouter();
+    const { disciplina_id } = router.query;
+
+    const [areaId, setAreaId] = useState<string>('');
     const [disciplina, setDisciplina] = useState<string>('');
 
     const [validDisciplina, setValidDisciplina] = useState<string | null>(null);
@@ -42,7 +46,24 @@ const DisciplinasAdd: NextPage<User> = (user) => {
         }
 
         getAreas();
-    }, []);
+
+        const getDisciplinaPorId = async () => {
+            await api.get('/disciplinas/get/disciplinaPorId', {
+                params: {
+                    disciplina_id: disciplina_id
+                }
+            })
+            .then((response) => {
+                setDisciplina(response.data.nome);
+                setAreaId(response.data.area_id);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+        }
+
+        getDisciplinaPorId();
+    }, [disciplina_id]);
 
     const disciplinaValidation = (nome: string) => {
         return /^.{3,}$/.test(nome);
@@ -64,22 +85,24 @@ const DisciplinasAdd: NextPage<User> = (user) => {
         if (!validDisciplina && areaId) {
             setSuccess(false);
             setCarregando(true);
-            await api.post('/disciplinas/post/salvaDisciplina', {
+            await api.put('/disciplinas/update/disciplinaPorId', {
                 nome: disciplina,
                 area_id: areaId,
             }, {
                 params: {
-                    user_cargo_id: user.cargo_id
+                    user_cargo_id: user.cargo_id,
+                    id: disciplina_id
                 }
             })
             .then(() => {
                 setDisciplina('');
-                setAreaId(null);
+                setAreaId('');
                 setSuccess(true);
+                router.push('/disciplinas');
             })
             .catch(function(err) {
                 console.log(err);
-                setCadastroError('Erro ao adicionar disciplina.')
+                setCadastroError('Erro ao editar disciplina.');
             })
             setCarregando(false);
         }
@@ -93,7 +116,7 @@ const DisciplinasAdd: NextPage<User> = (user) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            {!areas && <CarregamentoWidget />}
+            {!areas && !disciplina && <CarregamentoWidget />}
 
             {carregando && <CarregamentoWidget />}
 
@@ -108,7 +131,7 @@ const DisciplinasAdd: NextPage<User> = (user) => {
 
                     <Form>
                         <Label>Área de Conhecimento</Label>
-                        <Select onChange={(e) => setAreaId(e.target.value)}>
+                        <Select value={areaId} onChange={(e) => setAreaId(e.target.value)}>
                             <option selected value={undefined}>Selecione uma Área de Conhecimento</option>
                             {areas && areas.map((area) => {
                                 return <option key={area.id} value={area.id}>{area.nome}</option>

@@ -141,18 +141,18 @@ const EditBanca: NextPage<User> = (user) => {
                         setId(null);
                         setBancaSalva(response.data);
                         setImage(null);
-                        setCarregando(false);
                         setCadastroError(null);
                         setSuccess(true);
+                        router.push('/bancas');
                     })
                     .catch(function() {
-                        setCadastroError('Erro ao Atualizar Banca');
+                        setCadastroError('Erro ao editar banca.');
                     })
 
                 })
                 setCarregando(false);
             } catch (error: any) {
-                setCadastroError('Erro ao Atualizar Banca');
+                setCadastroError('Erro ao editar banca.');
             }
             
         }
@@ -182,21 +182,6 @@ const EditBanca: NextPage<User> = (user) => {
 
         getBanca();
     }, [bancaSalva, banca_id, user.cargo_id]);
-
-    const handleDelete = async (id: number) => {
-        await api.delete('/bancas/delete/bancaPorId', {
-            params: {
-                id: id,
-                user_cargo_id: user.cargo_id
-            }
-        })
-        .then((response) => {
-            setBancaSalva(response.data);
-        })
-        .catch(function(err) {
-            console.log(err);
-        })
-    }
 
     return (
         <>

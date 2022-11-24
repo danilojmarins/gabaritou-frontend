@@ -94,7 +94,7 @@ const Bancas: NextPage<User> = (user) => {
                 }).slice(resultadosVisitados, (resultadosVisitados + numResultados)).map((banca) => {
                     return (
                         <React.Fragment key={banca.id}>
-                            <CardInfo bancaOrgao={banca} user={user} page={'bancas'} area={null} />
+                            <CardInfo bancaOrgao={banca} user={user} page={'bancas'} disciplina={null} />
                         </React.Fragment>
                     )
                 })}

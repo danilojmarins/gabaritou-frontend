@@ -1,28 +1,69 @@
 import Link from 'next/link';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { CardInfoStyle } from '../styles/components/CardInfo.style';
 import { Banca } from '../types/Banca';
 import { User } from '../types/User';
 import { Orgao } from '../types/Orgao';
 import { Disciplina } from '../types/Disciplina';
+import { api } from '../services/api';
 
 interface CardInfoProps {
     disciplina: Disciplina | null;
     bancaOrgao: Banca | Orgao | null;
     user: User;
     page: string;
+    getDeleted: (deleted: Banca | Orgao) => void;
+    getSuccess: (success: boolean) => void;
 }
 
 const CardInfo: FC<CardInfoProps> = (props) => {
 
-    const { disciplina, bancaOrgao, user, page } = props;
+    const { disciplina, bancaOrgao, user, page, getDeleted, getSuccess } = props;
+
+    const handleDelete = async (id: number | undefined) => {
+        if (page === 'orgaos') {
+            getSuccess(false);
+            await api.delete('/orgaos/delete/orgaoPorId', {
+                params: {
+                    id: id,
+                    user_cargo_id: user.cargo_id
+                }
+            })
+            .then((response) => {
+                getDeleted(response.data);
+                getSuccess(true);
+            })
+            .catch(function(err) {
+                console.log(err);
+            })
+        }
+        else if (page === 'bancas') {
+            getSuccess(false);
+            await api.delete('/bancas/delete/bancaPorId', {
+                params: {
+                    id: id,
+                    user_cargo_id: user.cargo_id
+                }
+            })
+            .then((response) => {
+                getDeleted(response.data);
+                getSuccess(true);
+            })
+            .catch(function(err) {
+                console.log(err);
+            })
+        }
+    }
 
     if (page === 'bancas' || page === 'orgaos') {
         return (
             <CardInfoStyle>
                 <div className="head">
                     <h4 className='link'>{bancaOrgao?.sigla} - {bancaOrgao?.nome}</h4>
-                    {(user && user.cargo_id === 3) && <Link href={`/${page}/add/${bancaOrgao?.id}`}><h4 className='link'>Editar</h4></Link>}
+                    <div>
+                        {(user && user.cargo_id === 3) && <Link href={`/${page}/add/${bancaOrgao?.id}`}><h4 className='link option'>Editar</h4></Link>}
+                        {(user && user.cargo_id === 3) && <h4 className='link option' onClick={() => {handleDelete(bancaOrgao?.id)}}>Excluir</h4>}
+                    </div>
                 </div>
 
                 <div className="row">

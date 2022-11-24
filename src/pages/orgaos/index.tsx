@@ -14,6 +14,7 @@ import { Orgao } from "../../types/Orgao";
 import { PaginateStyle } from "../../styles/components/MinimalComponents.style";
 import ReactPaginate from "react-paginate";
 import CarregamentoWidget from "../../components/CarregamentoWidget";
+import ResponseWidget from "../../components/ResponseWidget";
 
 const Orgaos: NextPage<User> = (user) => {
 
@@ -22,6 +23,9 @@ const Orgaos: NextPage<User> = (user) => {
     const [numResultados, setNumResultados] = useState<number>(5);
     const [paginaNum, setPaginaNum] = useState<number>(0);
 
+    const [deleted, setDeleted] = useState<Orgao>();
+    const [success, setSuccess] = useState<boolean>(false);
+ 
     const resultadosVisitados: number = paginaNum * numResultados;
 
     const paginasCount: number = Math.ceil(orgaos.length / numResultados);
@@ -38,7 +42,7 @@ const Orgaos: NextPage<User> = (user) => {
         }
 
         getOrgaos();
-    }, []);
+    }, [deleted]);
 
     const getTermoPesquisa = (termoPesquisa: string) => {
         setTermoPesquisa(termoPesquisa);
@@ -53,6 +57,14 @@ const Orgaos: NextPage<User> = (user) => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
+    const getDeleted = (deleted: Orgao) => {
+        setDeleted(deleted);
+    }
+
+    const getSuccess = (success: boolean) => {
+        setSuccess(success);
+    }
+
     return (
         <>
             <Head>
@@ -62,6 +74,8 @@ const Orgaos: NextPage<User> = (user) => {
             </Head>
 
             {!orgaos && <CarregamentoWidget />}
+
+            {success && <ResponseWidget />}
 
             <Cabecalho user={user} />
 
@@ -88,7 +102,14 @@ const Orgaos: NextPage<User> = (user) => {
                 }).slice(resultadosVisitados, (resultadosVisitados + numResultados)).map((orgao) => {
                     return (
                         <React.Fragment key={orgao.id}>
-                            <CardInfo bancaOrgao={orgao} user={user} page={'orgaos'} area={null} />
+                            <CardInfo
+                                bancaOrgao={orgao}
+                                user={user}
+                                page={'orgaos'}
+                                disciplina={null}
+                                getDeleted={getDeleted}
+                                getSuccess={getSuccess}
+                            />
                         </React.Fragment>
                     )
                 })}
