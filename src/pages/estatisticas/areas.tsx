@@ -1,32 +1,36 @@
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { destroyCookie, parseCookies } from "nookies";
+import { useEffect, useState } from "react";
 import Cabecalho from "../../components/Cabecalho";
-import EstatisticaFiltro from "../../components/EstatisticaFiltro";
+import { api } from "../../services/api";
 import { getApiClient } from "../../services/axios";
-import { CardInfoStyle } from "../../styles/components/CardInfo.style";
-import { BancasStyle } from "../../styles/pages/Bancas.style";
 import { User } from "../../types/User";
-import estatisticas from '../../estatisticasBanca.json';
+import { Banca } from "../../types/Banca";
+import estatisticas from '../../estatisticasArea.json';
+import { BancasStyle } from "../../styles/pages/Bancas.style";
+import EstatisticaFiltro from "../../components/EstatisticaFiltro";
+import { CardInfoStyle } from "../../styles/components/CardInfo.style";
 import GraficoBarras from "../../components/GraficoBarras";
-import { useState } from "react";
 import Rodape from "../../components/Rodape";
 
-const EstatisticasBanca: NextPage<User> = (user) => {   
+const EstatisticasAreas: NextPage<User> = (user) => {
+
+    const [bancas, setBancas] = useState<Banca[]>();
 
     const [dados, setDados] = useState({
-        labels: estatisticas.map((dado) => dado.banca),
+        labels: estatisticas.map((area) => area.area),
         datasets: [{
             label: "Rendimento",
-            data: estatisticas.map((dado) => {
-                let total = dado.corretas + dado.erradas;
-                let rendimento = parseFloat(((dado.corretas / total) * 100).toFixed(2));
+            data: estatisticas.map((area) => {
+                let total = area.corretas + area.erradas;
+                let rendimento = parseFloat(((area.corretas / total) * 100).toFixed(2));
 
                 return rendimento;
             }),
-            backgroundColor: estatisticas.map((dado) => {
-                let total = dado.corretas + dado.erradas;
-                let rendimento = parseFloat(((dado.corretas / total) * 100).toFixed(2));
+            backgroundColor: estatisticas.map((area) => {
+                let total = area.corretas + area.erradas;
+                let rendimento = parseFloat(((area.corretas / total) * 100).toFixed(2));
 
                 if (rendimento >= 70) {
                     return '#8CC63E';
@@ -59,6 +63,20 @@ const EstatisticasBanca: NextPage<User> = (user) => {
         }
     }
 
+    useEffect(() => {
+        const getBancas = async () => {
+            await api.get('/areas/get/todasAreas')
+            .then((response) => {
+                setBancas(response.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+        }
+
+        getBancas();
+    }, []);
+
     return (
         <>
             <Head>
@@ -70,7 +88,7 @@ const EstatisticasBanca: NextPage<User> = (user) => {
             <Cabecalho user={user} />
 
             <BancasStyle>
-                <h2>Análise Estatística por Banca Organizadora</h2>
+                <h2>Análise Estatística por Área de Conhecimento</h2>
 
                 <EstatisticaFiltro />
 
@@ -80,23 +98,23 @@ const EstatisticasBanca: NextPage<User> = (user) => {
                     </div>
 
                     <div className="head">
-                        <h4 className="justify">Banca</h4>
+                        <h4 className="justify">Área</h4>
                         <h4 className="justify">Respostas Corretas</h4>
                         <h4 className="justify">Respostas Erradas</h4>
                         <h4 className="justify">Total</h4>
                         <h4 className="justify">Rendimento</h4>
                     </div>
 
-                    {estatisticas.map((banca) => {
+                    {estatisticas.map((area) => {
 
-                        let total = banca.corretas + banca.erradas;
-                        let rendimento: number = parseFloat(((banca.corretas / total) * 100).toFixed(2));
+                        let total = area.corretas + area.erradas;
+                        let rendimento: number = parseFloat(((area.corretas / total) * 100).toFixed(2));
 
                         return (
-                            <div className="row" key={banca.banca}>
-                                <p className="justify">{banca.banca}</p>
-                                <p className="justify">{banca.corretas}</p>
-                                <p className="justify">{banca.erradas}</p>
+                            <div className="row" key={area.area}>
+                                <p className="justify">{area.area}</p>
+                                <p className="justify">{area.corretas}</p>
+                                <p className="justify">{area.erradas}</p>
                                 <p className="justify">{total}</p>
                                 {(rendimento >= 70) && <p className="justify positivo">{rendimento}%</p>}
                                 {(rendimento >= 50) && (rendimento < 70) && <p className="justify medio">{rendimento}%</p>}
@@ -108,7 +126,7 @@ const EstatisticasBanca: NextPage<User> = (user) => {
 
                 <CardInfoStyle>
                     <div className="head bottom">
-                        <h4>Rendimento por Banca Organizadora</h4>
+                        <h4>Rendimento por Área de Conhecimento</h4>
                     </div>
 
                     <div className="row grafico">
@@ -160,4 +178,4 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
 }
 
-export default EstatisticasBanca;
+export default EstatisticasAreas;

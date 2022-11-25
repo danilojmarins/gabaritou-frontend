@@ -14,6 +14,7 @@ import { Banca } from "../../types/Banca";
 import CarregamentoWidget from "../../components/CarregamentoWidget";
 import ReactPaginate from "react-paginate";
 import { PaginateStyle } from "../../styles/components/MinimalComponents.style";
+import ResponseWidget from "../../components/ResponseWidget";
 
 const Bancas: NextPage<User> = (user) => {
 
@@ -21,6 +22,9 @@ const Bancas: NextPage<User> = (user) => {
     const [termoPesquisa, setTermoPesquisa] = useState<string>('');
     const [numResultados, setNumResultados] = useState<number>(5);
     const [paginaNum, setPaginaNum] = useState<number>(0);
+
+    const [deleted, setDeleted] = useState<Banca>();
+    const [success, setSuccess] = useState<boolean>(false);
 
     const resultadosVisitados: number = paginaNum * numResultados;
 
@@ -38,7 +42,7 @@ const Bancas: NextPage<User> = (user) => {
         }
 
         getBancas();
-    }, []);
+    }, [deleted]);
 
     useEffect(() => {
         if (paginaNum > paginasCount) {
@@ -52,6 +56,14 @@ const Bancas: NextPage<User> = (user) => {
 
     const getNumResultados = (numResultados: number) => {
         setNumResultados(numResultados);
+    }
+
+    const getDeleted = (deleted: Banca) => {
+        setDeleted(deleted);
+    }
+
+    const getSuccess = (success: boolean) => {
+        setSuccess(success);
     }
 
     const changePage = (selectedItem: {selected: number}) => {
@@ -68,6 +80,8 @@ const Bancas: NextPage<User> = (user) => {
             </Head>
 
             {!bancas && <CarregamentoWidget />}
+
+            {success && <ResponseWidget />}
 
             <Cabecalho user={user} />
 
@@ -94,7 +108,14 @@ const Bancas: NextPage<User> = (user) => {
                 }).slice(resultadosVisitados, (resultadosVisitados + numResultados)).map((banca) => {
                     return (
                         <React.Fragment key={banca.id}>
-                            <CardInfo bancaOrgao={banca} user={user} page={'bancas'} disciplina={null} />
+                            <CardInfo
+                                bancaOrgao={banca}
+                                user={user}
+                                page={'bancas'}
+                                disciplina={null}
+                                getDeleted={getDeleted}
+                                getSuccess={getSuccess}
+                            />
                         </React.Fragment>
                     )
                 })}

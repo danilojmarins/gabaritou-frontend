@@ -131,6 +131,11 @@ const BancasAdd: NextPage<User> = (user) => {
                         setSite('');
                         setSucccess(true);
                         setCadastroError(null);
+
+                        const img: any = document.getElementById('img-input');
+
+                        img.value = '';
+                        setImage(null);
                     })
                     .catch(() => {
                         setCadastroError('Erro ao Cadastrar Banca');
@@ -177,7 +182,7 @@ const BancasAdd: NextPage<User> = (user) => {
                         {validSite && <p className="error">{validSite}</p>}
 
                         <Label>Imagem</Label>
-                        <Input type='file' name="image" onChange={handleImageChange}></Input>
+                        <Input id="img-input" type='file' name="image" onChange={handleImageChange}></Input>
                         {validImage && <p className="error">{validImage}</p>}
 
                         {cadastroError &&

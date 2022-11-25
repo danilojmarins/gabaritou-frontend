@@ -129,9 +129,13 @@ const OrgaosAdd: NextPage<User> = (user) => {
                         setNome('');
                         setSigla('');
                         setSite('');
-                        setImage(null);
                         setSuccess(true);
                         setCadastroError(null);
+
+                        const img: any = document.getElementById('img-input');
+
+                        img.value = '';
+                        setImage(null);
                     })
                     .catch(function(err) {
                         setCadastroError('Erro ao Cadastrar Órgão');
@@ -180,7 +184,7 @@ const OrgaosAdd: NextPage<User> = (user) => {
                         {validSite && <p className="error">{validSite}</p>}
 
                         <Label>Imagem</Label>
-                        <Input type='file' name="image" onChange={handleImageChange}></Input>
+                        <Input type='file' id="img-input" name="image" onChange={handleImageChange}></Input>
                         {validImage && <p className="error">{validImage}</p>}
 
                         {cadastroError &&

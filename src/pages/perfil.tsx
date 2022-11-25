@@ -68,10 +68,14 @@ const Perfil: NextPage<User> = (user) => {
                             <Link href={'/estatisticas/banca'}>
                                 <p className="link">Banca</p>
                             </Link>
-                            <p className="link">Disciplina</p>
+                            <Link href={'/estatisticas/disciplinas'}>
+                                <p className="link">Disciplina</p>
+                            </Link>
                         </div>
                         <div className="row-perfil">
-                            <p className="link">Área de Conhecimento</p>
+                            <Link href={'/estatisticas/areas'}>
+                                <p className="link">Área de Conhecimento</p>
+                            </Link>
                             <p className="link">Benchmark</p>
                         </div>
                         <div className="row-perfil last">

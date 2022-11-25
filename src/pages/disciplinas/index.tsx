@@ -16,11 +16,15 @@ import React from "react";
 import PesquisaSimples from "../../components/PesquisaSimples";
 import CarregamentoWidget from "../../components/CarregamentoWidget";
 import ResponseWidget from "../../components/ResponseWidget";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 
 const Disciplinas: NextPage<User> = (user) => {
 
     const [areas, setAreas] = useState<AreaConhecimento[]>();
     const [disciplinas, setDisciplinas] = useState<Disciplina[]>();
+
+    const [termoPesquisa, setTermoPesquisa] = useState<string>('');
 
     const [deletedDisciplina, setDeletedDisciplina] = useState<Disciplina>();
 
@@ -69,6 +73,10 @@ const Disciplinas: NextPage<User> = (user) => {
         })
     }
 
+    const getTermoPesquisa = (termoPesquisa: string) => {
+        setTermoPesquisa(termoPesquisa);
+    }
+
     return (
         <>
             <Head>
@@ -90,7 +98,7 @@ const Disciplinas: NextPage<User> = (user) => {
                 <PesquisaSimples
                     user={user}
                     page={'disciplinas'}
-                    getTermoPesquisa={() => {}}
+                    getTermoPesquisa={getTermoPesquisa}
                     getNumResultados={() => {}}
                 />
 
@@ -103,15 +111,25 @@ const Disciplinas: NextPage<User> = (user) => {
                                         <h4>{area.nome}</h4>
                                     </div>
 
-                                    {disciplinas && disciplinas.map((disciplina, i) => {
+                                    {disciplinas && disciplinas.filter((value) => {
+                                        if (termoPesquisa === '' || termoPesquisa === undefined) {
+                                            return value;
+                                        }
+                                        else if (value.nome.toLowerCase().includes(termoPesquisa.toLowerCase())) {
+                                            return value;
+                                        }
+                                        else {
+                                            return null;
+                                        }
+                                    }).map((disciplina, i) => {
 
                                         if (disciplina.area_id === area.id) {
                                             return (
                                                 <div className={disciplinas[i + 1] && (disciplinas[i + 1].area_id === disciplina.area_id) ? "row" : "row last"} key={disciplina.id}>
                                                     <p className="left">{disciplina.nome}</p>
                                                     <p className={(user && user.cargo_id === 3) ? "link center" : "link right"}>{'123'} questões</p>
-                                                    {user.cargo_id === 3 ? <Link href={`/disciplinas/add/${disciplina.id}`}><p className="link center option">Editar</p></Link> : <></>}
-                                                    {user.cargo_id === 3 ? <p className="link right option" onClick={() => {handleDelete(disciplina.id)}}>Excluir</p> : <></>}
+                                                    {user.cargo_id === 3 ? <Link href={`/disciplinas/add/${disciplina.id}`}><p className="link center option edit"><FontAwesomeIcon icon={faPenToSquare} className="icon" />Editar</p></Link> : <></>}
+                                                    {user.cargo_id === 3 ? <p className="link right option delete" onClick={() => {handleDelete(disciplina.id)}}><FontAwesomeIcon icon={faTrashCan} className="icon" />Excluir</p> : <></>}
                                                 </div>
                                             )
                                         }

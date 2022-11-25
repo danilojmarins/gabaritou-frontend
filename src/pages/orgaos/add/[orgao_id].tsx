@@ -139,7 +139,7 @@ const EditOrgao: NextPage<User> = (user) => {
                         setImage(null);
                         setSuccess(true);
                         setCadastroError(null);
-                        router.push('orgaos');
+                        router.push('/orgaos');
                     })
                     .catch(function(err) {
                         setCadastroError('Erro ao editar órgão.');

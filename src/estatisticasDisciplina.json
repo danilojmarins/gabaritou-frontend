@@ -1,0 +1,74 @@
+[
+    {
+        "disciplina": "Língua Portuguesa",
+        "corretas": 43,
+        "erradas": 23,
+        "area_id": 1
+    },
+    {
+        "disciplina": "Matemática e Estatística",
+        "corretas": 5,
+        "erradas": 20,
+        "area_id": 1
+    },
+    {
+        "disciplina": "Informática Básica",
+        "corretas": 10,
+        "erradas": 10,
+        "area_id": 1
+    },
+    {
+        "disciplina": "Normas de TI",
+        "corretas": 100,
+        "erradas": 5,
+        "area_id": 2
+    },
+    {
+        "disciplina": "Auditoria de TI",
+        "corretas": 43,
+        "erradas": 23,
+        "area_id": 2
+    },
+    {
+        "disciplina": "Gestão da TI",
+        "corretas": 5,
+        "erradas": 20,
+        "area_id": 2
+    },
+    {
+        "disciplina": "Web Servers",
+        "corretas": 5,
+        "erradas": 20,
+        "area_id": 3
+    },
+    {
+        "disciplina": "Redes Básico",
+        "corretas": 100,
+        "erradas": 5,
+        "area_id": 3
+    },
+    {
+        "disciplina": "Redes Avançado",
+        "corretas": 43,
+        "erradas": 23,
+        "area_id": 3
+    },
+    {
+        "disciplina": "Ciência de Dados",
+        "corretas": 43,
+        "erradas": 23,
+        "area_id": 4
+    },
+    {
+        "disciplina": "Linguagem Java",
+        "corretas": 100,
+        "erradas": 5,
+        "area_id": 4
+    },
+    {
+        "disciplina": "Programação Web",
+        "corretas": 5,
+        "erradas": 20,
+        "area_id": 4
+    }
+]

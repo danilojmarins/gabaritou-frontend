@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { FC, useState } from 'react';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import { CardInfoStyle } from '../styles/components/CardInfo.style';
 import { Banca } from '../types/Banca';
 import { User } from '../types/User';
@@ -61,8 +63,8 @@ const CardInfo: FC<CardInfoProps> = (props) => {
                 <div className="head">
                     <h4 className='link'>{bancaOrgao?.sigla} - {bancaOrgao?.nome}</h4>
                     <div>
-                        {(user && user.cargo_id === 3) && <Link href={`/${page}/add/${bancaOrgao?.id}`}><h4 className='link option'>Editar</h4></Link>}
-                        {(user && user.cargo_id === 3) && <h4 className='link option' onClick={() => {handleDelete(bancaOrgao?.id)}}>Excluir</h4>}
+                        {(user && user.cargo_id === 3) && <Link href={`/${page}/add/${bancaOrgao?.id}`}><h4 className='link option edit'><FontAwesomeIcon className='icon' icon={faPenToSquare} />Editar</h4></Link>}
+                        {(user && user.cargo_id === 3) && <h4 className='link option delete' onClick={() => {handleDelete(bancaOrgao?.id)}}><FontAwesomeIcon className='icon' icon={faTrashCan} />Excluir</h4>}
                     </div>
                 </div>
 

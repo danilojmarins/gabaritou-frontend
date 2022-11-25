@@ -26,7 +26,7 @@ const PesquisaSimples = (props: PesquisaSimplesProps) => {
                     <input className='submit-input' type='submit' value='Pesquisar' onClick={() => {}}></input>
                 </div>
 
-                <div>
+                {page !== 'disciplinas' && <div>
                     <label className='txt'>Resultados por página:</label>
                     <select onChange={(e) => {props.getNumResultados(parseInt(e.target.value))}}>
                         <option value={5}>5</option>
@@ -34,7 +34,7 @@ const PesquisaSimples = (props: PesquisaSimplesProps) => {
                         <option value={15}>15</option>
                         <option value={20}>20</option>
                     </select>
-                </div>
+                </div>}
             </div>
         </PesquisaSimplesStyle>
     )

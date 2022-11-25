@@ -1,0 +1,22 @@
+[
+    {
+        "area": "Básicas",
+        "corretas": 43,
+        "erradas": 23
+    },
+    {
+        "area": "Governança",
+        "corretas": 5,
+        "erradas": 20
+    },
+    {
+        "area": "Infraestrutura",
+        "corretas": 10,
+        "erradas": 10
+    },
+    {
+        "area": "Sistemas",
+        "corretas": 100,
+        "erradas": 5
+    }
+]

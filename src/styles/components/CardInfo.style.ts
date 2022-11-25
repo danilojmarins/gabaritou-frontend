@@ -15,6 +15,8 @@ export const CardInfoStyle = styled.div.attrs((props: {text: string, rowBack: st
 
     p {
         width: 230px;
+        display: flex;
+        align-items: center;
     }
 
     .left {
@@ -44,6 +46,8 @@ export const CardInfoStyle = styled.div.attrs((props: {text: string, rowBack: st
 
     h4 {
         font-weight: 500;
+        display: flex;
+        align-items: center;
     }
 
     .row {
@@ -104,6 +108,19 @@ export const CardInfoStyle = styled.div.attrs((props: {text: string, rowBack: st
         width: 1000px;
         margin: auto;
         padding: 30px 0;
+    }
+
+    .icon {
+        width: 12px;
+        margin-right: 8px;
+    }
+
+    .edit {
+        color: ${props => props.theme.colors.widgets}
+    }
+
+    .delete {
+        color: ${props => props.theme.colors.secondary}
     }
  
 `;
