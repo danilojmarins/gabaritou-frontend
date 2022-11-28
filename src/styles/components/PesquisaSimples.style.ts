@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const PesquisaSimplesStyle = styled.div`
 
-    margin: 15px 0;
+    margin: 15px auto;
 
     .top {
         display: flex;
@@ -21,6 +21,7 @@ export const PesquisaSimplesStyle = styled.div`
     .options {
         display: flex;
         justify-content: space-between;
+        flex-flow: row wrap;
         border: 1px solid ${props => props.theme.colors.primary};
         padding: 20px 10px;
         border-radius: 5px;

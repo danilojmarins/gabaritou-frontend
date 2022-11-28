@@ -1,11 +1,12 @@
 import type { GetServerSideProps, NextPage } from 'next';
 import { destroyCookie, parseCookies } from 'nookies';
-import { getApiClient } from '../services/axios';
+import { getApiClient } from '../../services/axios';
 import Head from 'next/head';
-import Cabecalho from '../components/Cabecalho';
-import { DashboardStyle } from '../styles/pages/Dashboard.style';
-import Rodape from '../components/Rodape';
-import QuestaoCard from '../components/QuestaoCard';
+import Cabecalho from '../../components/Cabecalho';
+import { DashboardStyle } from '../../styles/pages/Dashboard.style';
+import Rodape from '../../components/Rodape';
+import QuestaoCard from '../../components/QuestaoCard';
+import QuestoesFiltro from '../../components/QuestoesFiltro';
 
 interface User {
     id: string;
@@ -28,7 +29,7 @@ const Questoes: NextPage<User> = (user) => {
             <Cabecalho user={user} />
 
             <DashboardStyle>
-                <div>Olá {user?.nome}</div>
+                <QuestoesFiltro user={user} />
 
                 <QuestaoCard />
             </DashboardStyle>
