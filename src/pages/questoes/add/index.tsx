@@ -12,7 +12,7 @@ import Head from "next/head";
 import { User } from "../../../types/User";
 import { AreaConhecimento } from "../../../types/AreaConhecimento";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { faMinus, faPlus, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import CarregamentoWidget from "../../../components/CarregamentoWidget";
 import ResponseWidget from "../../../components/ResponseWidget";
 import { Disciplina } from "../../../types/Disciplina";
@@ -41,6 +41,9 @@ const QuestoesAdd: NextPage<User> = (user) => {
         anos.push(currentYear);
         currentYear = currentYear - 1;
     }
+
+    const [alternativasIndex, setAlternativasIndex] = useState<number>(2);
+    const [alternativas, setAlternativas] = useState<string[]>(['A']);
 
     const [cadastroError, setCadastroError] = useState<string | null>(null);
 
@@ -81,6 +84,8 @@ const QuestoesAdd: NextPage<User> = (user) => {
         getOrgaos();
         getBancas();
     }, []);
+
+    console.log(alternativas);
 
     const disciplinaValidation = (nome: string) => {
         return /^.{3,}$/.test(nome);
@@ -190,21 +195,52 @@ const QuestoesAdd: NextPage<User> = (user) => {
 
                         <Label>Tipo da Questão</Label>
                         <Select onChange={(e) => setTipo(e.target.value)}>
-                            <option selected value={undefined}>Tipo</option>
+                            <option selected value={0}>Tipo</option>
                             <option value={1}>Múltipla-Escolha</option>
                             <option value={2}>Certo ou Errado</option>
                         </Select>
 
                         {(tipo ===  '1') && <>
-                            <Label>Alternativas</Label>
+                            <Label>
+                                Alternativas
+                                <FontAwesomeIcon className="alternativa-btn" width={'20px'} icon={faMinus} onClick={() => {
+                                    if (alternativasIndex > 2) {
+                                        setAlternativasIndex(alternativasIndex - 1);
+                                        alternativas.pop();
+                                    }
+                                }} />
+                                <FontAwesomeIcon className="alternativa-btn" width={'20px'} icon={faPlus} onClick={() => {
+                                    if (alternativasIndex > 1) {
+                                        setAlternativasIndex(alternativasIndex + 1);
+                                        alternativas.push(String.fromCharCode(alternativasIndex + 64));
+                                    }
+                                }} />
+                            </Label>
+
+                            {alternativas.map((alternativa) => {
+                                return (
+                                    <Label key={alternativa}>
+                                        {alternativa}
+                                        <Input className="alternativa" type={'text'}></Input>
+                                    </Label>
+                                )   
+                            })}
                         </>}
 
-                        {tipo && <>
+                        {(tipo === '1') && <>
                             <Label>Gabarito</Label>
                             <Select>
-                                {tipo === '1' ? anos.map((ano) => {
-                                    return <></>
-                                }) : <></>}
+                                {alternativas.map((alternativa) => {
+                                    return <option key={alternativa}>{alternativa}</option>
+                                })}
+                            </Select>
+                        </>}
+
+                        {(tipo === '2') && <>
+                            <Label>Gabarito</Label>
+                            <Select>
+                                <option>Certo</option>
+                                <option>Errado</option>
                             </Select>
                         </>}
                          

@@ -26,6 +26,23 @@ export const Label = styled.label`
     font-weight: 500;
     color: #444;
     margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+
+    .alternativa {
+        margin-left: 5px;
+    }
+
+    .alternativa-btn {
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 100%;
+        margin-left: 20px;
+
+        &:hover {
+            background-color: #EEE;
+        }
+    }
 
 `;
 
@@ -37,7 +54,7 @@ export const Input = styled.input`
     border: 1px solid #AAA;
     display: inline-block;
     width: 250px;
-    margin-bottom: 5%;
+    margin: 5% 0;
 
     &:focus {
         outline: none !important;
