@@ -15,12 +15,12 @@ import CarregamentoWidget from '../components/CarregamentoWidget';
 
 const Login: NextPage = ({ user }: any) => {
 
-  const [loginEmail, setLoginEmail] = useState<string>('');
-  const [loginSenha, setLoginSenha] = useState<string>('');
+  const [loginEmail, setLoginEmail] = useState<string>();
+  const [loginSenha, setLoginSenha] = useState<string>();
 
-  const [signNome, setSignNome] = useState<string>('');
-  const [signEmail, setSignEmail] = useState<string>('');
-  const [signSenha, setSignSenha] = useState<string>('');
+  const [signNome, setSignNome] = useState<string>();
+  const [signEmail, setSignEmail] = useState<string>();
+  const [signSenha, setSignSenha] = useState<string>();
 
   const [recuperaSenhaEmail, setRecuperaSenhaEmail] = useState<string>('');
 
@@ -43,17 +43,21 @@ const Login: NextPage = ({ user }: any) => {
 
   const { login, loginError, emailNaoConfirmado } = useContext(AuthContext);
 
-  const handleLogin = async () => {
-    setCarregando(true);
-    await login(loginEmail, loginSenha);
-    setCarregando(false);
+  const handleLogin = async (e: React.MouseEvent<HTMLDivElement> | React.FormEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
+    if (loginEmail && loginSenha) {
+      setCarregando(true);
+      await login(loginEmail, loginSenha);
+      setCarregando(false);
+    }
   }
 
   const handleSignIn = async (e: React.MouseEvent<HTMLDivElement> | React.FormEvent<HTMLFormElement>) => {
 
     e.preventDefault();
 
-    if (!validPassword && !validEmail) {
+    if (!validPassword && !validEmail && signEmail && signNome && signSenha) {
       try {
         setCarregando(true);
         await api.post('/usuarios/post/salvaUsuario', {
@@ -180,9 +184,9 @@ const Login: NextPage = ({ user }: any) => {
 
               <p className='error'><a href='' onClick={(e) => {e.preventDefault(); setModalRecuperaSenhaOpen(true)}}>Esqueceu sua senha?</a></p>
 
-              <Button className='btn' onClick={handleLogin}>
+              <Button className='btn' onClick={(e) => handleLogin(e)}>
                 Login
-                <input type="submit" onSubmit={handleLogin} style={{display: "none"}}></input>
+                <input type="submit" onSubmit={(e) => handleLogin(e)} style={{display: "none"}}></input>
               </Button>
             </form>
 

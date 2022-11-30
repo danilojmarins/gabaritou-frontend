@@ -30,7 +30,7 @@ export const Label = styled.label`
     align-items: center;
 
     .alternativa {
-        margin-left: 5px;
+        margin-left: 10px;
     }
 
     .alternativa-btn {

@@ -1,40 +1,35 @@
 import { QuestaoCardStyle } from '../styles/components/QuestaoCard.style';
+import { Questao } from '../types/Questão';
 
-const QuestaoCard = () => {
+interface QuestaoCardProps {
+    questao: Questao;
+}
+
+const QuestaoCard = (props: QuestaoCardProps) => {
+
+    const { id, texto, alternativas } = props.questao;
+
     return (
         <QuestaoCardStyle width='100%'>
             <p className='orgao'>Banca: LOREM IMPSUM (2022)</p>
 
             <p className='enunciado'>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod 
-                tempor incididunt ut labore et dolore magna aliqua. 
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                {texto}
             </p>
 
-            <p className='orientacao'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod:</p>
+            <p className='orientacao'>{texto}</p>
 
             <div className='alternativas'>
-                <div className='alternativa'>
-                    <input type='radio'></input>
-                    A) dasdasdla
-                </div>
 
-                <div className='alternativa'>
-                    <input type='radio'></input>
-                </div>
-
-                <div className='alternativa'>
-                    <input type='radio'></input>
-                </div>
-
-                <div className='alternativa'>
-                    <input type='radio'></input>
-                </div>
-
-                <div className='alternativa'>
-                    <input type='radio'></input>
-                </div>
+                {alternativas.map((alternativa) => {
+                    return (
+                        <div key={alternativa.alternativa} className='alternativa'>
+                            <input type='radio'></input>
+                            {alternativa.alternativa}) {alternativa.texto}
+                        </div>
+                    )
+                })}
+                
             </div>
         </QuestaoCardStyle>
     )

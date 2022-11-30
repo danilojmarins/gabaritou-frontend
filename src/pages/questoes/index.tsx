@@ -7,16 +7,25 @@ import { DashboardStyle } from '../../styles/pages/Dashboard.style';
 import Rodape from '../../components/Rodape';
 import QuestaoCard from '../../components/QuestaoCard';
 import QuestoesFiltro from '../../components/QuestoesFiltro';
-
-interface User {
-    id: string;
-    nome: string;
-    email: string;
-    email_confirmado: boolean;
-    cargo_id: number;
-}
+import { api } from '../../services/api';
+import { useEffect, useState } from 'react';
+import { User } from '../../types/User';
+import { Questao } from '../../types/Questão';
  
 const Questoes: NextPage<User> = (user) => {
+
+    const [questoes, setQuestoes] = useState<Questao[]>();
+
+    useEffect(() => {
+        const getQuestoes = async () => {
+            await api.get('/questoes/get/todasQuestoes')
+            .then((response) => {
+                setQuestoes(response.data);
+            })
+        }
+
+        getQuestoes();
+    }, []);
 
     return (
         <>
@@ -31,7 +40,10 @@ const Questoes: NextPage<User> = (user) => {
             <DashboardStyle>
                 <QuestoesFiltro user={user} />
 
-                <QuestaoCard />
+                {questoes && questoes.map((questao) => {
+                    return <QuestaoCard key={questao.id} questao={questao} />
+                })}
+
             </DashboardStyle>
 
             <Rodape />

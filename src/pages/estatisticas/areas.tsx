@@ -90,7 +90,10 @@ const EstatisticasAreas: NextPage<User> = (user) => {
             <BancasStyle>
                 <h2>Análise Estatística por Área de Conhecimento</h2>
 
-                <EstatisticaFiltro />
+                <EstatisticaFiltro
+                    page="areas"
+                    getDisciplinaAreaId={() => {}}
+                />
 
                 <CardInfoStyle rowBack='#F3F3F3' text='#515151'>
                     <div className="head bottom">
