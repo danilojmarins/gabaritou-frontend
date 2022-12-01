@@ -22,16 +22,20 @@ import { Banca } from "../../../types/Banca";
 const QuestoesAdd: NextPage<User> = (user) => {
 
     const [areaId, setAreaId] = useState<string | null>(null);
-    const [disciplina, setDisciplina] = useState<string>('');
+    const [disciplinaId, setDisciplinaId] = useState<string | null>(null);
+    const [orgaoId, setOrgaoId] = useState<string | null>(null);
+    const [bancaId, setBancaId] = useState<string | null>(null);
+    const [ano, setAno] = useState<string | null>(null);
+    const [texto, setTexto] = useState<string>('');
+    const [tipo, setTipo] = useState<string | null>(null);
+    const [alternativas, setAlternativas] = useState<Array<object>>([{}]);
+    const [gabarito, setGabarito] = useState<string | null>(null);
 
-    const [validDisciplina, setValidDisciplina] = useState<string | null>(null);
 
     const [areas, setAreas] = useState<AreaConhecimento[]>();
     const [disciplinas, setDisciplinas] = useState<Disciplina[]>();
     const [orgaos, setOrgaos] = useState<Orgao[]>();
     const [bancas, setBancas] = useState<Banca[]>();
-    const [ano, setAno] = useState<string | undefined>();
-    const [tipo, setTipo] = useState<string | undefined>();
 
     const anos = [];
 
@@ -42,8 +46,8 @@ const QuestoesAdd: NextPage<User> = (user) => {
         currentYear = currentYear - 1;
     }
 
-    const [alternativasIndex, setAlternativasIndex] = useState<number>(2);
-    const [alternativas, setAlternativas] = useState<string[]>(['A']);
+    const [letrasIndex, setLetrasIndex] = useState<number>(2);
+    const [letras, setLetras] = useState<string[]>(['A']);
 
     const [cadastroError, setCadastroError] = useState<string | null>(null);
 
@@ -85,39 +89,37 @@ const QuestoesAdd: NextPage<User> = (user) => {
         getBancas();
     }, []);
 
-    console.log(alternativas);
-
-    const disciplinaValidation = (nome: string) => {
-        return /^.{3,}$/.test(nome);
-    }
-
-    const handleDisciplinaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        if (!disciplinaValidation(event.target.value)) {
-            setValidDisciplina('Nome deve ter ao menos 3 caracteres.');
-        } else {
-            setValidDisciplina(null);
-        }
-    
-        setDisciplina(event.target.value);
-    };
-
     const handleCadastro = async (e: React.MouseEvent<HTMLDivElement> | React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!validDisciplina && areaId) {
+        if (areaId && disciplinaId && orgaoId && bancaId && ano && texto && tipo && alternativas && gabarito) {
             setSuccess(false);
             setCarregando(true);
-            await api.post('/disciplinas/post/salvaDisciplina', {
-                nome: disciplina,
-                area_id: areaId,
+            await api.post('/questoes/post/salvaQuestao', {
+                area_conhecimento_id: areaId,
+                disciplina_id: disciplinaId,
+                orgao_id: orgaoId,
+                banca_id: bancaId,
+                ano: ano,
+                texto: texto,
+                tipo_id: tipo,
+                alternativas: alternativas,
+                gabarito: gabarito
             }, {
                 params: {
                     user_cargo_id: user.cargo_id
                 }
             })
             .then(() => {
-                setDisciplina('');
                 setAreaId(null);
+                setDisciplinaId(null);
+                setOrgaoId(null);
+                setBancaId(null);
+                setAno(null);
+                setTexto('');
+                setTipo(null);
+                setAlternativas([{}]);
+                setGabarito(null);
                 setSuccess(true);
             })
             .catch(function(err) {
@@ -152,22 +154,23 @@ const QuestoesAdd: NextPage<User> = (user) => {
                     <Form>
                         <Label>Área de Conhecimento</Label>
                         <Select onChange={(e) => setAreaId(e.target.value)}>
-                            <option selected value={undefined}>Selecione uma Área de Conhecimento</option>
+                            <option selected>Selecione uma Área de Conhecimento</option>
                             {areas && areas.map((area) => {
                                 return <option key={area.id} value={area.id}>{area.nome}</option>
                             })}
                         </Select>
 
                         <Label>Disciplina</Label>
-                        <Select onChange={(e) => setAreaId(e.target.value)}>
+                        <Select onChange={(e) => setDisciplinaId(e.target.value)}>
                             <option selected value={undefined}>Selecione uma Disciplina</option>
                             {disciplinas && disciplinas.map((disciplina) => {
+                                if (parseInt(areaId!) === disciplina.area_id)
                                 return <option key={disciplina.id} value={disciplina.id}>{disciplina.nome}</option>
                             })}
                         </Select>
 
                         <Label>Órgão</Label>
-                        <Select onChange={(e) => setAreaId(e.target.value)}>
+                        <Select onChange={(e) => setOrgaoId(e.target.value)}>
                             <option selected value={undefined}>Selecione um Órgão</option>
                             {orgaos && orgaos.map((orgao) => {
                                 return <option key={orgao.id} value={orgao.id}>{orgao.sigla}</option>
@@ -175,7 +178,7 @@ const QuestoesAdd: NextPage<User> = (user) => {
                         </Select>
 
                         <Label>Banca</Label>
-                        <Select onChange={(e) => setAreaId(e.target.value)}>
+                        <Select onChange={(e) => setBancaId(e.target.value)}>
                             <option selected value={undefined}>Selecione uma Banca</option>
                             {bancas && bancas.map((banca) => {
                                 return <option key={banca.id} value={banca.id}>{banca.sigla}</option>
@@ -183,7 +186,7 @@ const QuestoesAdd: NextPage<User> = (user) => {
                         </Select>
 
                         <Label>Ano</Label>
-                        <Select onChange={(e) => setAreaId(e.target.value)}>
+                        <Select onChange={(e) => setAno(e.target.value)}>
                             <option selected value={undefined}>Selecione um Ano</option>
                             {anos && anos.map((ano) => {
                                 return <option key={ano} value={ano}>{ano}</option>
@@ -191,11 +194,21 @@ const QuestoesAdd: NextPage<User> = (user) => {
                         </Select>
 
                         <Label>Texto</Label>
-                        <Input as='textarea' value={disciplina} onChange={handleDisciplinaChange}></Input>
+                        <Input as='textarea' value={texto} onChange={(e) => setTexto(e.target.value)}></Input>
 
                         <Label>Tipo da Questão</Label>
-                        <Select onChange={(e) => setTipo(e.target.value)}>
-                            <option selected value={0}>Tipo</option>
+                        <Select onChange={(e) => {
+                            setTipo(e.target.value)
+                            if (e.target.value === '1') {
+                                setAlternativas([{}]);
+                                setLetras(['A']);
+                                setLetrasIndex(2);
+                            }
+                            else if (e.target.value === '2') {
+                                setAlternativas([{ letra: 'Certo', texto: 'Certo' }, { letra: 'Errado', texto: 'Errado' }])
+                            }
+                        }}>
+                            <option selected value={undefined}>Tipo</option>
                             <option value={1}>Múltipla-Escolha</option>
                             <option value={2}>Certo ou Errado</option>
                         </Select>
@@ -204,24 +217,29 @@ const QuestoesAdd: NextPage<User> = (user) => {
                             <Label>
                                 Alternativas
                                 <FontAwesomeIcon className="alternativa-btn" width={'20px'} icon={faMinus} onClick={() => {
-                                    if (alternativasIndex > 2) {
-                                        setAlternativasIndex(alternativasIndex - 1);
+                                    if (letrasIndex > 2) {
+                                        setLetrasIndex(letrasIndex - 1);
+                                        letras.pop();
                                         alternativas.pop();
                                     }
                                 }} />
                                 <FontAwesomeIcon className="alternativa-btn" width={'20px'} icon={faPlus} onClick={() => {
-                                    if (alternativasIndex > 1) {
-                                        setAlternativasIndex(alternativasIndex + 1);
-                                        alternativas.push(String.fromCharCode(alternativasIndex + 64));
+                                    if (letrasIndex > 1) {
+                                        setLetrasIndex(letrasIndex + 1);
+                                        letras.push(String.fromCharCode(letrasIndex + 64));
+                                        alternativas.push({});
                                     }
                                 }} />
                             </Label>
 
-                            {alternativas.map((alternativa) => {
+                            {letras.map((letra, i) => {
                                 return (
-                                    <Label key={alternativa}>
-                                        {alternativa}
-                                        <Input className="alternativa" type={'text'}></Input>
+                                    <Label key={letra}>
+                                        {letra}
+                                        <Input className="alternativa" type={'text'} onChange={(e) => {
+                                            const texto = e.target.value;
+                                            alternativas[i] = { letra, texto };
+                                        }}></Input>
                                     </Label>
                                 )   
                             })}
@@ -229,18 +247,18 @@ const QuestoesAdd: NextPage<User> = (user) => {
 
                         {(tipo === '1') && <>
                             <Label>Gabarito</Label>
-                            <Select>
-                                {alternativas.map((alternativa) => {
-                                    return <option key={alternativa}>{alternativa}</option>
+                            <Select onChange={(e) => setGabarito(e.target.value)}>
+                                {letras.map((letra) => {
+                                    return <option key={letra} value={letra}>{letra}</option>
                                 })}
                             </Select>
                         </>}
 
                         {(tipo === '2') && <>
                             <Label>Gabarito</Label>
-                            <Select>
-                                <option>Certo</option>
-                                <option>Errado</option>
+                            <Select onChange={(e) => setGabarito(e.target.value)}>
+                                <option value={'Certo'}>Certo</option>
+                                <option value={'Errado'}>Errado</option>
                             </Select>
                         </>}
                          

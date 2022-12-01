@@ -7,11 +7,11 @@ interface QuestaoCardProps {
 
 const QuestaoCard = (props: QuestaoCardProps) => {
 
-    const { id, texto, alternativas } = props.questao;
+    const { id, texto, alternativas, gabarito, ano, tipo_id, banca_id, orgao_id, area_conhecimento_id, disciplina_id } = props.questao;
 
     return (
         <QuestaoCardStyle width='100%'>
-            <p className='orgao'>Banca: LOREM IMPSUM (2022)</p>
+            <p className='orgao'>Banca: {banca_id} ({ano})</p>
 
             <p className='enunciado'>
                 {texto}
@@ -23,9 +23,9 @@ const QuestaoCard = (props: QuestaoCardProps) => {
 
                 {alternativas.map((alternativa) => {
                     return (
-                        <div key={alternativa.alternativa} className='alternativa'>
+                        <div key={alternativa.letra} className='alternativa'>
                             <input type='radio'></input>
-                            {alternativa.alternativa}) {alternativa.texto}
+                            {alternativa.letra}) {alternativa.texto}
                         </div>
                     )
                 })}

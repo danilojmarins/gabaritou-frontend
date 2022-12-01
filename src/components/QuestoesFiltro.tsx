@@ -21,6 +21,8 @@ const QuestoesFiltro = (props: FiltroProps) => {
     const [orgaos, setOrgaos] = useState<Orgao[]>();
     const [bancas, setBancas] = useState<Banca[]>();
 
+    const [areaId, setAreaId] = useState<string>('');
+
     const anos = [];
 
     let currentYear = new Date().getFullYear();
@@ -78,7 +80,7 @@ const QuestoesFiltro = (props: FiltroProps) => {
                 </div>
 
                 <div>
-                    <select>
+                    <select onChange={(e) => setAreaId(e.target.value)}>
                         <option value={0} selected>Área de Conhecimento</option>
                         {areas && areas.map((area) => {
                             return <option key={area.id} value={area.id}>{area.nome}</option>
@@ -90,6 +92,7 @@ const QuestoesFiltro = (props: FiltroProps) => {
                     <select>
                         <option value={0} selected>Disciplina</option>
                         {disciplinas && disciplinas.map((disciplina) => {
+                            if (disciplina.area_id === parseInt(areaId))
                             return <option key={disciplina.id} value={disciplina.id}>{disciplina.nome}</option>
                         })}
                     </select>
