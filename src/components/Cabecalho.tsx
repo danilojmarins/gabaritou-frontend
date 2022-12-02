@@ -65,7 +65,9 @@ const Cabecalho = ({ user }: any) => {
                         <div className='nav-content'>Questões</div>
                     </Link>
                     <div className='nav-content'>Provas</div>
-                    <div className='nav-content'>Concursos</div>
+                    <Link href={'/concursos'}>
+                        <div className='nav-content'>Concursos</div>
+                    </Link>
                     <Link href={'/disciplinas'}>
                         <div className='nav-content'>Disciplinas</div>
                     </Link>
