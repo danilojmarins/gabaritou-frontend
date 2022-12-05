@@ -14,9 +14,13 @@ export const CardInfoStyle = styled.div.attrs((props: {text: string, rowBack: st
     }
 
     p {
-        width: 230px;
+        width: auto;
         display: flex;
         align-items: center;
+    }
+
+    .p-fix-width {
+        width: 230px;
     }
 
     .left {

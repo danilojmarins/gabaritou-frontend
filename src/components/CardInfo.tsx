@@ -8,19 +8,21 @@ import { User } from '../types/User';
 import { Orgao } from '../types/Orgao';
 import { Disciplina } from '../types/Disciplina';
 import { api } from '../services/api';
+import { Concurso } from '../types/Concurso';
 
 interface CardInfoProps {
     disciplina: Disciplina | null;
     bancaOrgao: Banca | Orgao | null;
+    concurso: Concurso | null;
     user: User;
     page: string;
-    getDeleted: (deleted: Banca | Orgao) => void;
+    getDeleted: (deleted: any) => void;
     getSuccess: (success: boolean) => void;
 }
 
 const CardInfo: FC<CardInfoProps> = (props) => {
 
-    const { disciplina, bancaOrgao, user, page, getDeleted, getSuccess } = props;
+    const { disciplina, bancaOrgao, concurso, user, page, getDeleted, getSuccess } = props;
 
     const handleDelete = async (id: number | undefined) => {
         if (page === 'orgaos') {
@@ -52,6 +54,22 @@ const CardInfo: FC<CardInfoProps> = (props) => {
                 getSuccess(true);
             })
             .catch(function(err) {
+                console.log(err);
+            })
+        }
+        else if (page === 'concursos') {
+            getSuccess(false);
+            await api.delete('/concursos/delete/concursoPorId', {
+                params: {
+                    id: id,
+                    user_cargo_id: user.cargo_id
+                }
+            })
+            .then((response) => {
+                getDeleted(response.data);
+                getSuccess(true);
+            })
+            .catch((err) => {
                 console.log(err);
             })
         }
@@ -92,6 +110,40 @@ const CardInfo: FC<CardInfoProps> = (props) => {
                 <div className="row last">
                     <p className='link'>Número de Questões:</p>
                     <p className='link'>Questões Disponibilizadas:</p>
+                </div>
+            </CardInfoStyle>
+        )
+    }
+
+    else if (page === 'concursos') {
+        return (
+            <CardInfoStyle>
+                <div className="head">
+                    <h4 className='link'>{concurso?.orgao.sigla} - {concurso?.ano}</h4>
+                    <div>
+                        {(user && user.cargo_id === 3) && <Link href={`/${page}/add/${concurso?.id}`}><h4 className='link option edit'><FontAwesomeIcon className='icon' icon={faPenToSquare} />Editar</h4></Link>}
+                        {(user && user.cargo_id === 3) && <h4 className='link option delete' onClick={() => {handleDelete(concurso?.id)}}><FontAwesomeIcon className='icon' icon={faTrashCan} />Excluir</h4>}
+                    </div>
+                </div>
+
+                <div className="row">
+                    <p className='link'>Banca: {concurso?.banca.sigla}</p>
+                    <p className='link'>Taxa de Inscrição:</p>
+                </div>
+
+                <div className="row">
+                    <p className='link'>Regiao:</p>
+                    <p className='link'>Estado:</p>
+                </div>
+
+                <div className="row">
+                    <p className='link'>Número de Vagas:</p>
+                    <p className='link'>Salário:</p>
+                </div>
+
+                <div className="row last">
+                    <p className='link'>Provas Cadastradas:</p>
+                    <p className='link'>Questões disponibilizadas:</p>
                 </div>
             </CardInfoStyle>
         )

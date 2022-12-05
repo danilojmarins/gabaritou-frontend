@@ -55,8 +55,8 @@ const ConcursosAdd: NextPage<User> = (user) => {
 
             await api.post('/concursos/post/salvaConcurso', {
                 ano: ano,
-                banca_id: bancaId,
-                orgao_id: orgaoId
+                banca: bancaId,
+                orgao: orgaoId
             }, {
                 params: {
                     user_cargo_id: user.cargo_id

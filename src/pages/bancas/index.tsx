@@ -113,6 +113,7 @@ const Bancas: NextPage<User> = (user) => {
                                 user={user}
                                 page={'bancas'}
                                 disciplina={null}
+                                concurso={null}
                                 getDeleted={getDeleted}
                                 getSuccess={getSuccess}
                             />

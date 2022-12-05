@@ -21,6 +21,7 @@ const Concursos: NextPage<User> = (user) => {
     const [success, setSuccess] = useState<boolean>(false);
     const [termoPesquisa, setTermoPesquisa] = useState<string>('');
     const [numResultados, setNumResultados] = useState<number>(10); 
+    const [deleted, setDeleted] = useState<Concurso>();
 
     useEffect(() => {
         const getConcursos = async () => {
@@ -31,7 +32,7 @@ const Concursos: NextPage<User> = (user) => {
         }
 
         getConcursos();
-    }, []);
+    }, [deleted]);
 
     const getTermoPesquisa = (termoPesquisa: string) => {
         setTermoPesquisa(termoPesquisa);
@@ -41,6 +42,14 @@ const Concursos: NextPage<User> = (user) => {
         setNumResultados(numResultados);
     }
 
+    const getDeleted = (deleted: Concurso) => {
+        setDeleted(deleted);
+    }
+
+    const getSuccess = (success: boolean) => {
+        setSuccess(success);
+    }
+ 
     return (
         <>
             <Head>
@@ -73,8 +82,9 @@ const Concursos: NextPage<User> = (user) => {
                                 user={user}
                                 page={'concursos'}
                                 disciplina={null}
-                                getDeleted={() => {}}
-                                getSuccess={() => {}}
+                                concurso={concurso}
+                                getDeleted={getDeleted}
+                                getSuccess={getSuccess}
                             />
                         </React.Fragment>
                     )

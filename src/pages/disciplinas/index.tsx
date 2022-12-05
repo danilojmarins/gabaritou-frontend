@@ -126,10 +126,10 @@ const Disciplinas: NextPage<User> = (user) => {
                                         if (disciplina.area_id === area.id) {
                                             return (
                                                 <div className={disciplinas[i + 1] && (disciplinas[i + 1].area_id === disciplina.area_id) ? "row" : "row last"} key={disciplina.id}>
-                                                    <p className="left">{disciplina.nome}</p>
-                                                    <p className={(user && user.cargo_id === 3) ? "link center" : "link right"}>{'123'} questões</p>
-                                                    {user.cargo_id === 3 ? <Link href={`/disciplinas/add/${disciplina.id}`}><p className="link center option edit"><FontAwesomeIcon icon={faPenToSquare} className="icon" />Editar</p></Link> : <></>}
-                                                    {user.cargo_id === 3 ? <p className="link right option delete" onClick={() => {handleDelete(disciplina.id)}}><FontAwesomeIcon icon={faTrashCan} className="icon" />Excluir</p> : <></>}
+                                                    <p className="left p-fix-width">{disciplina.nome}</p>
+                                                    <p className={(user && user.cargo_id === 3) ? "link center p-fix-width" : "link right p-fix-width"}>{'123'} questões</p>
+                                                    {user.cargo_id === 3 ? <Link href={`/disciplinas/add/${disciplina.id}`}><p className="link center option edit p-fix-width"><FontAwesomeIcon icon={faPenToSquare} className="icon" />Editar</p></Link> : <></>}
+                                                    {user.cargo_id === 3 ? <p className="link right option delete p-fix-width" onClick={() => {handleDelete(disciplina.id)}}><FontAwesomeIcon icon={faTrashCan} className="icon" />Excluir</p> : <></>}
                                                 </div>
                                             )
                                         }
