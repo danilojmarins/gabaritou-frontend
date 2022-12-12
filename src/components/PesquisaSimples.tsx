@@ -29,7 +29,7 @@ const PesquisaSimples = (props: PesquisaSimplesProps) => {
                 {page !== 'disciplinas' && <div>
                     <label className='txt'>Resultados por página:</label>
                     <select onChange={(e) => {props.getNumResultados(parseInt(e.target.value))}}>
-                        <option value={5}>5</option>
+                        {page === 'concursos' ? null : <option value={5}>5</option>}
                         <option value={10}>10</option>
                         <option value={15}>15</option>
                         <option value={20}>20</option>

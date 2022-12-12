@@ -113,6 +113,45 @@ const ConcursosAdd: NextPage<User> = (user) => {
                         })}
                     </Select>
 
+                    <Label>Status</Label>
+                    <Select onChange={(e) => setOrgaoId(e.target.value)}>
+                        {orgaos && orgaos.map((orgao) => {
+                            return <option value={orgao.id} key={orgao.id}>{orgao.sigla}</option>
+                        })}
+                    </Select>
+
+                    <Label>Região</Label>
+                    <Select onChange={(e) => setOrgaoId(e.target.value)}>
+                        {orgaos && orgaos.map((orgao) => {
+                            return <option value={orgao.id} key={orgao.id}>{orgao.sigla}</option>
+                        })}
+                    </Select>
+
+                    <Label>Estado</Label>
+                    <Select onChange={(e) => setOrgaoId(e.target.value)}>
+                        {orgaos && orgaos.map((orgao) => {
+                            return <option value={orgao.id} key={orgao.id}>{orgao.sigla}</option>
+                        })}
+                    </Select>
+
+                    <Label>Edital</Label>
+                    <Input type='file' value={ano} onChange={(e) => setAno(e.target.value)}></Input>
+
+                    <Label>Início das Inscrições</Label>
+                    <Input type='date' value={ano} onChange={(e) => setAno(e.target.value)}></Input>
+
+                    <Label>Término das Inscrições</Label>
+                    <Input type='date' value={ano} onChange={(e) => setAno(e.target.value)}></Input>
+
+                    <Label>Taxa de Inscrição</Label>
+                    <Input type='number'></Input>
+
+                    <Label>Número Total de Vagas</Label>
+                    <Input type='number'></Input>
+
+                    <Label>Data da Prova</Label>
+                    <Input type='date' value={ano} onChange={(e) => setAno(e.target.value)}></Input>
+
                     {cadastroError &&
                         <p className="error">
                             <FontAwesomeIcon className="error-icon" icon={faTriangleExclamation} />

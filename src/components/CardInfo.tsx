@@ -117,9 +117,11 @@ const CardInfo: FC<CardInfoProps> = (props) => {
 
     else if (page === 'concursos') {
         return (
-            <CardInfoStyle>
+            <CardInfoStyle width='49%'>
                 <div className="head">
-                    <h4 className='link'>{concurso?.orgao.sigla} - {concurso?.ano}</h4>
+                    <Link href={`/concursos/detalhes/${concurso?.id}`}>
+                        <h4 className='link'>{concurso?.orgao.sigla} - {concurso?.ano}</h4>
+                    </Link>
                     <div>
                         {(user && user.cargo_id === 3) && <Link href={`/${page}/add/${concurso?.id}`}><h4 className='link option edit'><FontAwesomeIcon className='icon' icon={faPenToSquare} />Editar</h4></Link>}
                         {(user && user.cargo_id === 3) && <h4 className='link option delete' onClick={() => {handleDelete(concurso?.id)}}><FontAwesomeIcon className='icon' icon={faTrashCan} />Excluir</h4>}
