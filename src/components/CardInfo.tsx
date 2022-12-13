@@ -134,8 +134,8 @@ const CardInfo: FC<CardInfoProps> = (props) => {
                 </div>
 
                 <div className="row">
-                    <p className='link'>Regiao:</p>
-                    <p className='link'>Estado:</p>
+                    <p className='link'>Regiao: {concurso?.estado.regiao.descricao}</p>
+                    <p className='link'>Estado: {concurso?.estado.nome}</p>
                 </div>
 
                 <div className="row">

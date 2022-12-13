@@ -17,6 +17,9 @@ import ResponseWidget from "../../../components/ResponseWidget";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { Orgao } from "../../../types/Orgao";
+import { Status } from "../../../types/ConcursoStatus";
+import { Regiao } from "../../../types/Regiao";
+import { Estado } from "../../../types/Estado";
 
 const EditConcurso: NextPage<User> = (user) => {
 
@@ -27,9 +30,15 @@ const EditConcurso: NextPage<User> = (user) => {
     const [ano, setAno] = useState<string>('');
     const [bancaId, setBancaId] = useState<string>('');
     const [orgaoId, setOrgaoId] = useState<string>('');
+    const [statusId, setStatusId] = useState<string>('');
+    const [regiaoId, setRegiaoId] = useState<string>('');
+    const [estadoId, setEstadoId] = useState<string>('');
 
     const [bancas, setBancas] = useState<Banca[]>();
     const [orgaos, setOrgaos] = useState<Orgao[]>();
+    const [status, setStatus] = useState<Status[]>();
+    const [regioes, setRegioes] = useState<Regiao[]>();
+    const [estados, setEstados] = useState<Estado[]>();
 
     const [cadastroError, setCadastroError] = useState<string | null>(null);
 
@@ -38,7 +47,7 @@ const EditConcurso: NextPage<User> = (user) => {
 
     const handleEdit = async () => {
 
-        if (ano && bancaId && orgaoId) {
+        if (ano && bancaId && orgaoId && statusId && regiaoId && estadoId) {
         
             setCarregando(true);
             setSuccess(false);
@@ -47,6 +56,8 @@ const EditConcurso: NextPage<User> = (user) => {
                 ano: ano,
                 banca: bancaId,
                 orgao: orgaoId,
+                status: statusId,
+                estado: estadoId
             }, {
                 params: {
                     id: id,
@@ -57,6 +68,9 @@ const EditConcurso: NextPage<User> = (user) => {
                 setAno('');
                 setBancaId('');
                 setOrgaoId('');
+                setStatusId('');
+                setRegiaoId('');
+                setEstadoId('');
                 setCadastroError(null);
                 setSuccess(true);
                 router.push('/concursos');
@@ -84,6 +98,9 @@ const EditConcurso: NextPage<User> = (user) => {
                 setAno(response.data.ano);
                 setBancaId(response.data.banca);
                 setOrgaoId(response.data.orgao);
+                setStatusId(response.data.status);
+                setRegiaoId(response.data.estado.regiao.id)
+                setEstadoId(response.data.estado.id)
                 setCarregando(false);
             })
             .catch(function(err) {
@@ -109,9 +126,35 @@ const EditConcurso: NextPage<User> = (user) => {
             })
         }
 
+        const getStatus = async () => {
+            await api.get('status/get/todosStatus')
+            .then((response) => {
+                setStatus(response.data)
+            })
+        }
+
+        const getRegioes = async () => {
+            await api.get('regioes/get/todasRegioes')
+            .then((response) => {
+                setRegioes(response.data)
+            })
+        }
+
+        const getEstados = async () => {
+            await api.get('estados/get/todosEstados')
+            .then((response) => {
+                setEstados(response.data)
+            })
+        }
+
         getBancas();
         getOrgaos();
+        getStatus();
+        getRegioes();
+        getEstados();
     }, []);
+
+    console.log(statusId, regiaoId, estadoId)
 
     return (
         <>
@@ -129,38 +172,61 @@ const EditConcurso: NextPage<User> = (user) => {
 
             <DashboardStyle>
 
-                <QuestaoCardStyle width='60%'>
-                    <h3>Editar Concurso</h3>
+                <h3>Editar Concurso</h3>
 
-                    <Form>
-                        <Label>Ano</Label>
-                        <Input type='text' value={ano} onChange={(e) => setAno(e.target.value)}></Input>
+                <Form>
+                    <Label>Ano</Label>
+                    <Input type='text' value={ano} onChange={(e) => setAno(e.target.value)}></Input>
 
-                        <Label>Banca</Label>
-                        <Select onChange={(e) => setBancaId(e.target.value)}>
-                            {bancas && bancas.map((banca) => {
-                                return <option value={banca.id} key={banca.id} selected={banca.id.toString() === bancaId}>{banca.sigla}</option>
-                            })}
-                        </Select>
+                    <Label>Banca</Label>
+                    <Select onChange={(e) => setBancaId(e.target.value)}>
+                        {bancas && bancas.map((banca) => {
+                            return <option value={banca.id} key={banca.id} selected={banca.id.toString() === bancaId}>{banca.sigla}</option>
+                        })}
+                    </Select>
 
-                        <Label>Órgão</Label>
-                        <Select onChange={(e) => setOrgaoId(e.target.value)}>
-                            {orgaos && orgaos.map((orgao) => {
-                                return <option value={orgao.id} key={orgao.id} selected={orgao.id.toString() === orgaoId}>{orgao.sigla}</option>
-                            })}
-                        </Select>
+                    <Label>Órgão</Label>
+                    <Select onChange={(e) => setOrgaoId(e.target.value)}>
+                        {orgaos && orgaos.map((orgao) => {
+                            return <option value={orgao.id} key={orgao.id} selected={orgao.id.toString() === orgaoId}>{orgao.sigla}</option>
+                        })}
+                    </Select>
 
-                        {cadastroError &&
-                            <p className="error">
-                                <FontAwesomeIcon className="error-icon" icon={faTriangleExclamation} />
-                                {cadastroError}
-                            </p>
-                        }
-                    </Form>
+                    <Label>Status</Label>
+                    <Select onChange={(e) => setStatusId(e.target.value)}>
+                        {status && status.map((status) => {
+                            return <option value={status.id} key={status.id} selected={status.id === parseInt(statusId)}>{status.descricao}</option>
+                        })}
+                    </Select>
 
-                    <Button className="button" onClick={handleEdit}>Salvar</Button>
+                    <Label>Região</Label>
+                    <Select onChange={(e) => setRegiaoId(e.target.value)}>
+                        <option>Selecione uma Região</option>
+                        {regioes && regioes.map((regiao) => {
+                            return <option value={regiao.id} key={regiao.id} selected={regiao.id === parseInt(regiaoId)}>{regiao.descricao}</option>
+                        })}
+                    </Select>
 
-                </QuestaoCardStyle>
+                    <Label>Estado</Label>
+                    <Select onChange={(e) => setEstadoId(e.target.value)}>
+                        <option>Selecione um Estado</option>
+                        {estados && estados.map((estado) => {
+                            if (parseInt(regiaoId) === estado.regiao) {
+                                return <option value={estado.id} key={estado.id} selected={estado.id === parseInt(estadoId)}>{estado.nome}</option>
+                            }
+                            else return null;
+                        })}
+                    </Select>
+
+                    {cadastroError &&
+                        <p className="error">
+                            <FontAwesomeIcon className="error-icon" icon={faTriangleExclamation} />
+                            {cadastroError}
+                        </p>
+                    }
+                </Form>
+
+                <Button className="button" onClick={handleEdit}>Salvar</Button>
 
             </DashboardStyle>
 

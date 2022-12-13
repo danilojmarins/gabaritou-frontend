@@ -15,6 +15,9 @@ import { DashboardStyle } from "../../../styles/pages/Dashboard.style";
 import { Banca } from "../../../types/Banca";
 import { Orgao } from "../../../types/Orgao";
 import { User } from "../../../types/User";
+import { Status } from "../../../types/ConcursoStatus";
+import { Regiao } from "../../../types/Regiao";
+import { Estado } from "../../../types/Estado";
 
 const ConcursosAdd: NextPage<User> = (user) => {
 
@@ -24,10 +27,16 @@ const ConcursosAdd: NextPage<User> = (user) => {
 
     const [bancas, setBancas] = useState<Banca[]>();
     const [orgaos, setOrgaos] = useState<Orgao[]>();
+    const [status, setStatus] = useState<Status[]>();
+    const [regioes, setRegioes] = useState<Regiao[]>();
+    const [estados, setEstados] = useState<Estado[]>();
 
     const [ano, setAno] = useState<string>();
     const [bancaId, setBancaId] = useState<string>();
     const [orgaoId, setOrgaoId] = useState<string>();
+    const [statusId, setStatusId] = useState<string>();
+    const [regiaoId, setRegiaoId] = useState<string>();
+    const [estadoId, setEstadoId] = useState<string>();
 
     useEffect(() => {
         const getBancas = async () => {
@@ -44,19 +53,45 @@ const ConcursosAdd: NextPage<User> = (user) => {
             })
         }
 
+        const getStatus = async () => {
+            await api.get('status/get/todosStatus')
+            .then((response) => {
+                setStatus(response.data)
+            })
+        }
+
+        const getRegioes = async () => {
+            await api.get('regioes/get/todasRegioes')
+            .then((response) => {
+                setRegioes(response.data)
+            })
+        }
+
+        const getEstados = async () => {
+            await api.get('estados/get/todosEstados')
+            .then((response) => {
+                setEstados(response.data)
+            })
+        }
+
         getBancas();
         getOrgaos();
+        getStatus();
+        getRegioes();
+        getEstados();
     }, []);
 
     const handleCadastro = async () => {
-        if (ano && bancaId && orgaoId) {
+        if (ano && bancaId && orgaoId && statusId && regiaoId && estadoId) {
             setCarregando(true);
             setSuccess(false);
 
             await api.post('/concursos/post/salvaConcurso', {
                 ano: ano,
                 banca: bancaId,
-                orgao: orgaoId
+                orgao: orgaoId,
+                status: statusId,
+                estado: estadoId
             }, {
                 params: {
                     user_cargo_id: user.cargo_id
@@ -66,6 +101,9 @@ const ConcursosAdd: NextPage<User> = (user) => {
                 setAno('');
                 setBancaId('');
                 setOrgaoId('');
+                setStatusId('');
+                setRegiaoId('');
+                setEstadoId('');
                 setSuccess(true);
                 setCadastroError(null);
             })
@@ -101,6 +139,7 @@ const ConcursosAdd: NextPage<User> = (user) => {
 
                     <Label>Banca</Label>
                     <Select onChange={(e) => setBancaId(e.target.value)}>
+                        <option>Selecione uma Banca</option>
                         {bancas && bancas.map((banca) => {
                             return <option value={banca.id} key={banca.id}>{banca.sigla}</option>
                         })}
@@ -108,49 +147,38 @@ const ConcursosAdd: NextPage<User> = (user) => {
 
                     <Label>Órgão</Label>
                     <Select onChange={(e) => setOrgaoId(e.target.value)}>
+                        <option>Selecione um Órgão</option>
                         {orgaos && orgaos.map((orgao) => {
                             return <option value={orgao.id} key={orgao.id}>{orgao.sigla}</option>
                         })}
                     </Select>
 
                     <Label>Status</Label>
-                    <Select onChange={(e) => setOrgaoId(e.target.value)}>
-                        {orgaos && orgaos.map((orgao) => {
-                            return <option value={orgao.id} key={orgao.id}>{orgao.sigla}</option>
+                    <Select onChange={(e) => setStatusId(e.target.value)}>
+                        <option>Selecione um Status</option>
+                        {status && status.map((status) => {
+                            return <option value={status.id} key={status.id}>{status.descricao}</option>
                         })}
                     </Select>
 
                     <Label>Região</Label>
-                    <Select onChange={(e) => setOrgaoId(e.target.value)}>
-                        {orgaos && orgaos.map((orgao) => {
-                            return <option value={orgao.id} key={orgao.id}>{orgao.sigla}</option>
+                    <Select onChange={(e) => setRegiaoId(e.target.value)}>
+                        <option>Selecione uma Região</option>
+                        {regioes && regioes.map((regiao) => {
+                            return <option value={regiao.id} key={regiao.id}>{regiao.descricao}</option>
                         })}
                     </Select>
 
                     <Label>Estado</Label>
-                    <Select onChange={(e) => setOrgaoId(e.target.value)}>
-                        {orgaos && orgaos.map((orgao) => {
-                            return <option value={orgao.id} key={orgao.id}>{orgao.sigla}</option>
+                    <Select onChange={(e) => setEstadoId(e.target.value)}>
+                        <option>Selecione um Estado</option>
+                        {estados && estados.map((estado) => {
+                            if (regiaoId === estado.regiao.toString()) {
+                                return <option value={estado.id} key={estado.id}>{estado.nome}</option>
+                            }
+                            else return null;
                         })}
                     </Select>
-
-                    <Label>Edital</Label>
-                    <Input type='file' value={ano} onChange={(e) => setAno(e.target.value)}></Input>
-
-                    <Label>Início das Inscrições</Label>
-                    <Input type='date' value={ano} onChange={(e) => setAno(e.target.value)}></Input>
-
-                    <Label>Término das Inscrições</Label>
-                    <Input type='date' value={ano} onChange={(e) => setAno(e.target.value)}></Input>
-
-                    <Label>Taxa de Inscrição</Label>
-                    <Input type='number'></Input>
-
-                    <Label>Número Total de Vagas</Label>
-                    <Input type='number'></Input>
-
-                    <Label>Data da Prova</Label>
-                    <Input type='date' value={ano} onChange={(e) => setAno(e.target.value)}></Input>
 
                     {cadastroError &&
                         <p className="error">
