@@ -102,7 +102,13 @@ const Concursos: NextPage<User> = (user) => {
                     if (termoPesquisa === '' || termoPesquisa === undefined) {
                         return value;
                     }
-                    else if (value.ano.toLowerCase().includes(termoPesquisa.toLowerCase()) || value.banca.sigla.toLowerCase().includes(termoPesquisa.toLowerCase()) || value.orgao.sigla.toLowerCase().includes(termoPesquisa.toLowerCase())) {
+                    else if (
+                        value.ano.toLowerCase().includes(termoPesquisa.toLowerCase()) ||
+                        value.banca.sigla.toLowerCase().includes(termoPesquisa.toLowerCase()) ||
+                        value.orgao.sigla.toLowerCase().includes(termoPesquisa.toLowerCase()) ||
+                        value.estado.nome.toLowerCase().includes(termoPesquisa.toLowerCase()) ||
+                        value.estado.regiao.descricao.toLowerCase().includes(termoPesquisa.toLowerCase())
+                    ) {
                         return value;
                     }
                     else {

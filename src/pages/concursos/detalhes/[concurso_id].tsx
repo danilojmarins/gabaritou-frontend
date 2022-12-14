@@ -64,17 +64,17 @@ const DetalhesConcurso: NextPage<User> = (user) => {
 
                     <div className="row">
                         <p>Banca: {concurso?.banca.sigla}</p>
-                        <p>Taxa de Inscrição:</p>
+                        <p>Taxa de Inscrição: R$ {concurso?.taxa_inscricao}</p>
                     </div>
 
                     <div className="row">
-                        <p>Região: {}</p>
-                        <p>Estado: {}</p>
+                        <p>Região: {concurso?.estado.regiao.descricao}</p>
+                        <p>Estado: {concurso?.estado.nome}</p>
                     </div>
 
                     <div className="row">
-                        <p>Número de Vagas: {}</p>
-                        <p>Salário: {}</p>
+                        <p>Número de Vagas: {concurso?.num_vagas}</p>
+                        <p>Salário: R$ {concurso?.min_salario} até R$ {concurso?.max_salario}</p>
                     </div>
 
                     <div className="row last">

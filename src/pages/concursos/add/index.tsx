@@ -18,6 +18,7 @@ import { User } from "../../../types/User";
 import { Status } from "../../../types/ConcursoStatus";
 import { Regiao } from "../../../types/Regiao";
 import { Estado } from "../../../types/Estado";
+import axios from "axios";
 
 const ConcursosAdd: NextPage<User> = (user) => {
 
@@ -37,6 +38,14 @@ const ConcursosAdd: NextPage<User> = (user) => {
     const [statusId, setStatusId] = useState<string>();
     const [regiaoId, setRegiaoId] = useState<string>();
     const [estadoId, setEstadoId] = useState<string>();
+    const [edital, setEdital] = useState<File | null>(null);
+    const [inicioInscricao, setInicioInscricao] = useState<string>();
+    const [fimInscricao, setFimInscricao] = useState<string>();
+    const [taxaInscricao, setTaxaInscricao] = useState<number>();
+    const [numVagas, setNumVagas] = useState<number>();
+    const [dataProva, setDataProva] = useState<string>();
+    const [minSalario, setMinSalario] = useState<number>();
+    const [maxSalario, setMaxSalario] = useState<number>();
 
     useEffect(() => {
         const getBancas = async () => {
@@ -81,39 +90,82 @@ const ConcursosAdd: NextPage<User> = (user) => {
         getEstados();
     }, []);
 
+    console.log(edital)
+
     const handleCadastro = async () => {
-        if (ano && bancaId && orgaoId && statusId && regiaoId && estadoId) {
-            setCarregando(true);
-            setSuccess(false);
+        if (ano && bancaId && orgaoId && statusId && regiaoId && estadoId && edital) {
 
-            await api.post('/concursos/post/salvaConcurso', {
-                ano: ano,
-                banca: bancaId,
-                orgao: orgaoId,
-                status: statusId,
-                estado: estadoId
-            }, {
-                params: {
-                    user_cargo_id: user.cargo_id
-                }
-            })
-            .then(() => {
-                setAno('');
-                setBancaId('');
-                setOrgaoId('');
-                setStatusId('');
-                setRegiaoId('');
-                setEstadoId('');
-                setSuccess(true);
-                setCadastroError(null);
-            })
-            .catch(() => {
-                setCadastroError('Erro ao cadastrar concurso.');
-            })
+            try {
+                const formData = new FormData();
+                formData.append('edital', edital);
 
-            setCarregando(false);
+                setCarregando(true);
+                setSuccess(false);
+
+                await axios.post('/api/concursos', formData, {
+                    params: {
+                        cargo_id: user.cargo_id,
+                        file_name: orgaoId + '-' + ano
+                    }
+                })
+                .then(() => {
+                    api.post('/concursos/post/salvaConcurso', {
+                        ano: ano,
+                        banca: bancaId,
+                        orgao: orgaoId,
+                        status: statusId,
+                        estado: estadoId,
+                        edital_url: orgaoId + '-' + ano + edital.name.substring(edital.name.length, edital.name.lastIndexOf('.')),
+                        inicio_inscricao: inicioInscricao,
+                        fim_inscricao: fimInscricao,
+                        taxa_inscricao: taxaInscricao,
+                        num_vagas: numVagas,
+                        data_prova: dataProva,
+                        min_salario: minSalario,
+                        max_salario: maxSalario
+                    }, {
+                        params: {
+                            user_cargo_id: user.cargo_id
+                        }
+                    })
+                    .then(() => {
+                        setAno('');
+                        setBancaId('');
+                        setOrgaoId('');
+                        setStatusId('');
+                        setRegiaoId('');
+                        setEstadoId('');
+                        setInicioInscricao('');
+                        setFimInscricao('');
+                        setTaxaInscricao(0);
+                        setNumVagas(0);
+                        setDataProva('');
+                        setMinSalario(0);
+                        setMaxSalario(0);
+                        setSuccess(true);
+                        setCadastroError(null);
+
+                        const edital: any = document.getElementById('edital-input');
+
+                        edital.value = '';
+                        setEdital(null);
+                    })
+                    .catch(() => {
+                        setCadastroError('Erro ao cadastrar Concurso.');
+                    })
+                })
+                setCarregando(false);
+            } catch (error: any) {
+                setCadastroError('Erro ao Cadastrar Concurso');
+            }
         }
     }
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files){
+            setEdital(event.target.files[0]);
+        }
+    };
 
     return (
         <>
@@ -141,7 +193,12 @@ const ConcursosAdd: NextPage<User> = (user) => {
                     <Select onChange={(e) => setBancaId(e.target.value)}>
                         <option>Selecione uma Banca</option>
                         {bancas && bancas.map((banca) => {
-                            return <option value={banca.id} key={banca.id}>{banca.sigla}</option>
+                            return <option
+                                        value={banca.id}
+                                        key={banca.id}
+                                        selected={banca.id.toString() === bancaId}>
+                                            {banca.sigla}
+                                    </option>
                         })}
                     </Select>
 
@@ -149,7 +206,12 @@ const ConcursosAdd: NextPage<User> = (user) => {
                     <Select onChange={(e) => setOrgaoId(e.target.value)}>
                         <option>Selecione um Órgão</option>
                         {orgaos && orgaos.map((orgao) => {
-                            return <option value={orgao.id} key={orgao.id}>{orgao.sigla}</option>
+                            return <option
+                                        value={orgao.id}
+                                        key={orgao.id}
+                                        selected={orgao.id.toString() === orgaoId}>
+                                            {orgao.sigla}
+                                    </option>
                         })}
                     </Select>
 
@@ -157,7 +219,12 @@ const ConcursosAdd: NextPage<User> = (user) => {
                     <Select onChange={(e) => setStatusId(e.target.value)}>
                         <option>Selecione um Status</option>
                         {status && status.map((status) => {
-                            return <option value={status.id} key={status.id}>{status.descricao}</option>
+                            return <option
+                                        value={status.id}
+                                        key={status.id} 
+                                        selected={status.id.toString() === statusId}>
+                                            {status.descricao}
+                                    </option>
                         })}
                     </Select>
 
@@ -165,7 +232,12 @@ const ConcursosAdd: NextPage<User> = (user) => {
                     <Select onChange={(e) => setRegiaoId(e.target.value)}>
                         <option>Selecione uma Região</option>
                         {regioes && regioes.map((regiao) => {
-                            return <option value={regiao.id} key={regiao.id}>{regiao.descricao}</option>
+                            return <option
+                                        value={regiao.id}
+                                        key={regiao.id}
+                                        selected={regiao.id.toString() === regiaoId}>
+                                            {regiao.descricao}
+                                    </option>
                         })}
                     </Select>
 
@@ -173,12 +245,41 @@ const ConcursosAdd: NextPage<User> = (user) => {
                     <Select onChange={(e) => setEstadoId(e.target.value)}>
                         <option>Selecione um Estado</option>
                         {estados && estados.map((estado) => {
-                            if (regiaoId === estado.regiao.toString()) {
-                                return <option value={estado.id} key={estado.id}>{estado.nome}</option>
+                            if (regiaoId === estado.regiao.id.toString()) {
+                                return <option
+                                            value={estado.id}
+                                            key={estado.id} 
+                                            selected={estado.id.toString() === estadoId}>
+                                                {estado.nome}
+                                        </option>
                             }
                             else return null;
                         })}
                     </Select>
+
+                    <Label>Edital</Label>
+                    <Input type='file' id="edital-input" onChange={handleFileChange}></Input>
+
+                    <Label>Início das Inscrições</Label>
+                    <Input type='date' value={inicioInscricao} onChange={(e) => setInicioInscricao(e.target.value)}></Input>
+
+                    <Label>Término das Inscrições</Label>
+                    <Input type='date' value={fimInscricao} onChange={(e) => setFimInscricao(e.target.value)}></Input>
+
+                    <Label>Taxa de Inscrição</Label>
+                    <Input type='number' value={taxaInscricao} onChange={(e) => setTaxaInscricao(parseFloat(e.target.value))}></Input>
+
+                    <Label>Número Total de Vagas</Label>
+                    <Input type='number' value={numVagas} onChange={(e) => setNumVagas(parseInt(e.target.value))}></Input>
+
+                    <Label>Data da Prova</Label>
+                    <Input type='date' value={dataProva} onChange={(e) => setDataProva(e.target.value)}></Input>
+
+                    <Label>Menor Salário</Label>
+                    <Input type='number' value={minSalario} onChange={(e) => setMinSalario(parseFloat(e.target.value))}></Input>
+
+                    <Label>Maior Salário</Label>
+                    <Input type='number' value={maxSalario} onChange={(e) => setMaxSalario(parseFloat(e.target.value))}></Input>
 
                     {cadastroError &&
                         <p className="error">

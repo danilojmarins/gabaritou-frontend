@@ -25,7 +25,7 @@ export const Label = styled.label`
     font-size: 14px;
     font-weight: 500;
     color: #444;
-    margin-bottom: 5px;
+    margin: 20px 0 5px 0;
     display: flex;
     align-items: center;
 
@@ -48,13 +48,12 @@ export const Label = styled.label`
 
 export const Input = styled.input`
 
-    font-size: 16px;
-    padding: 8px;
+    font-size: 14px;
+    padding: 6px;
     border-radius: 4px;
     border: 1px solid #AAA;
     display: inline-block;
     width: 250px;
-    margin: 5% 0;
 
     &:focus {
         outline: none !important;
@@ -78,13 +77,12 @@ export const Input = styled.input`
 
 export const Select = styled.select`
 
-    font-size: 16px;
-    padding: 8px;
+    font-size: 14px;
+    padding: 6px;
     border-radius: 4px;
     border: 1px solid #AAA;
     display: inline-block;
     width: 250px;
-    margin-bottom: 5%;
 
     &:focus {
         outline: none !important;

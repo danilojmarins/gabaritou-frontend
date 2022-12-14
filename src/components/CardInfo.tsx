@@ -130,7 +130,7 @@ const CardInfo: FC<CardInfoProps> = (props) => {
 
                 <div className="row">
                     <p className='link'>Banca: {concurso?.banca.sigla}</p>
-                    <p className='link'>Taxa de Inscrição:</p>
+                    <p className='link'>Taxa de Inscrição: R$ {concurso?.taxa_inscricao}</p>
                 </div>
 
                 <div className="row">
@@ -139,8 +139,8 @@ const CardInfo: FC<CardInfoProps> = (props) => {
                 </div>
 
                 <div className="row">
-                    <p className='link'>Número de Vagas:</p>
-                    <p className='link'>Salário:</p>
+                    <p className='link'>Número de Vagas: {concurso?.num_vagas}</p>
+                    <p className='link'>Salário: R$ {concurso?.min_salario} até R$ {concurso?.max_salario}</p>
                 </div>
 
                 <div className="row last">

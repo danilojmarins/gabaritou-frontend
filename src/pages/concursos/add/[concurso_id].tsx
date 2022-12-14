@@ -4,7 +4,6 @@ import Cabecalho from "../../../components/Cabecalho";
 import Rodape from "../../../components/Rodape";
 import { api } from "../../../services/api";
 import { Button, Form, Input, Label, Select } from "../../../styles/components/MinimalComponents.style";
-import { QuestaoCardStyle } from "../../../styles/components/QuestaoCard.style";
 import { DashboardStyle } from "../../../styles/pages/Dashboard.style";
 import { getApiClient } from "../../../services/axios";
 import { destroyCookie, parseCookies } from "nookies";
@@ -211,7 +210,7 @@ const EditConcurso: NextPage<User> = (user) => {
                     <Select onChange={(e) => setEstadoId(e.target.value)}>
                         <option>Selecione um Estado</option>
                         {estados && estados.map((estado) => {
-                            if (parseInt(regiaoId) === estado.regiao) {
+                            if (parseInt(regiaoId) === estado.regiao.id) {
                                 return <option value={estado.id} key={estado.id} selected={estado.id === parseInt(estadoId)}>{estado.nome}</option>
                             }
                             else return null;
