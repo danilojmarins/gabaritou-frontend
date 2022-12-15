@@ -93,10 +93,12 @@ const ConcursosAdd: NextPage<User> = (user) => {
     console.log(edital)
 
     const handleCadastro = async () => {
-        if (ano && bancaId && orgaoId && statusId && regiaoId && estadoId && edital) {
+        if (ano && bancaId && orgaoId && statusId && regiaoId && estadoId) {
 
             try {
                 const formData = new FormData();
+
+                if (edital)
                 formData.append('edital', edital);
 
                 setCarregando(true);
@@ -115,7 +117,7 @@ const ConcursosAdd: NextPage<User> = (user) => {
                         orgao: orgaoId,
                         status: statusId,
                         estado: estadoId,
-                        edital_url: orgaoId + '-' + ano + edital.name.substring(edital.name.length, edital.name.lastIndexOf('.')),
+                        edital_url: orgaoId + '-' + ano + edital?.name.substring(edital.name.length, edital.name.lastIndexOf('.')),
                         inicio_inscricao: inicioInscricao,
                         fim_inscricao: fimInscricao,
                         taxa_inscricao: taxaInscricao,
