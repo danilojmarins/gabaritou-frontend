@@ -90,8 +90,6 @@ const ConcursosAdd: NextPage<User> = (user) => {
         getEstados();
     }, []);
 
-    console.log(edital)
-
     const handleCadastro = async () => {
         if (ano && bancaId && orgaoId && statusId && regiaoId && estadoId) {
 

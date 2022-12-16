@@ -126,5 +126,14 @@ export const CardInfoStyle = styled.div.attrs((props: {text: string, rowBack: st
     .delete {
         color: ${props => props.theme.colors.secondary}
     }
+
+    .list {
+        font-size: 14px;
+        padding: 10px 10px;
+    }
+
+    .link-list {
+        padding: 0 5px;
+    }
  
 `;
