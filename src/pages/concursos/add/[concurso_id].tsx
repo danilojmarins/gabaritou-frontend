@@ -114,6 +114,7 @@ const EditConcurso: NextPage<User> = (user) => {
 
                         edital.value = '';
                         setEdital(null);
+                        router.push('/concursos');
                     })
                     .catch(() => {
                         setCadastroError('Erro ao cadastrar Concurso.');
@@ -127,7 +128,7 @@ const EditConcurso: NextPage<User> = (user) => {
     }
 
     useEffect(() => {
-        const getBanca = async () => {
+        const getConcursoPorId = async () => {
             setCarregando(true);
             await api.get('/concursos/get/concursoPorId', {
                 params: {
@@ -157,7 +158,7 @@ const EditConcurso: NextPage<User> = (user) => {
             })
         }
 
-        getBanca();
+        getConcursoPorId();
     }, [concurso_id, user.cargo_id]);
 
     useEffect(() => {

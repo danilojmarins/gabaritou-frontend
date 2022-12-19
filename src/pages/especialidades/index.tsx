@@ -14,11 +14,12 @@ import { CardInfoStyle } from "../../styles/components/CardInfo.style";
 import { PaginateStyle } from "../../styles/components/MinimalComponents.style";
 import { BancasStyle } from "../../styles/pages/Bancas.style";
 import { ConcursoCargo } from "../../types/ConcursoCargo";
+import { Especialidade } from "../../types/Especialidade";
 import { User } from "../../types/User";
 
-const Cargos: NextPage<User> = (user) => {
+const Especialidades: NextPage<User> = (user) => {
 
-    const [cargos, setCargos] = useState<ConcursoCargo[]>([]);
+    const [especialidades, setEspecialidades] = useState<Especialidade[]>([]);
     const [termoPesquisa, setTermoPesquisa] = useState<string>('');
     const [numResultados, setNumResultados] = useState<number>(10);
 
@@ -27,7 +28,7 @@ const Cargos: NextPage<User> = (user) => {
 
     const [paginaNum, setPaginaNum] = useState<number>(0);
     const resultadosVisitados: number = paginaNum * numResultados;
-    const paginasCount: number = Math.ceil(cargos.length / numResultados);
+    const paginasCount: number = Math.ceil(especialidades.length / numResultados);
 
     const getTermoPesquisa = (termoPesquisa: string) => {
         setTermoPesquisa(termoPesquisa);
@@ -38,20 +39,20 @@ const Cargos: NextPage<User> = (user) => {
     }
 
     useEffect(() => {
-        const getCargos = async () => {
-            await api.get('/cargos/get/todosCargos')
+        const getEspecialidades = async () => {
+            await api.get('/especialidades/get/todasEspecialidades')
             .then((response) => {
-                setCargos(response.data);
+                setEspecialidades(response.data);
             })
         }
 
-        getCargos();
+        getEspecialidades();
     }, [deleted]);
 
     const handleDelete = async (id: number) => {
         setSuccess(false);
 
-        await api.delete('/cargos/delete/cargoPorId', {
+        await api.delete('/especialidades/delete/especialidadePorId', {
             params: {
                 id: id,
                 user_cargo_id: user.cargo_id
@@ -82,7 +83,7 @@ const Cargos: NextPage<User> = (user) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            {!cargos && <CarregamentoWidget />}
+            {!especialidades && <CarregamentoWidget />}
 
             {success && <ResponseWidget />}
 
@@ -95,26 +96,26 @@ const Cargos: NextPage<User> = (user) => {
 
                 <PesquisaSimples
                     user={user}
-                    page={'cargos'}
+                    page={'especialidades'}
                     getTermoPesquisa={getTermoPesquisa}
                     getNumResultados={getNumResultados}
                 />
 
                 <CardInfoStyle rowBack='#F3F3F3' text='#515151'>
                     <div className="head">
+                        <h4 className="justify">Título do Concurso</h4>
                         <h4 className="justify">Cargo</h4>
-                        <h4 className="justify">Sigla do Órgão</h4>
-                        <h4 className="justify">Escolaridade</h4>
+                        <h4 className="justify">Especialidade</h4>
                         <h4 className="justify"> </h4>
                     </div>
 
-                    {cargos && cargos.filter((value) => {
+                    {especialidades && especialidades.filter((value) => {
                         if (termoPesquisa === '' || termoPesquisa === undefined) {
                             return value;
                         }
                         else if (
                             value.descricao.toLowerCase().includes(termoPesquisa.toLowerCase()) ||
-                            value.escolaridade.descricao.toLowerCase().includes(termoPesquisa.toLowerCase()) ||
+                            value.cargo.descricao.toLowerCase().includes(termoPesquisa.toLowerCase()) ||
                             value.concurso.orgao.sigla.toLowerCase().includes(termoPesquisa.toLowerCase()) ||
                             value.concurso.ano.toLowerCase().includes(termoPesquisa.toLowerCase())
                         ) {
@@ -123,15 +124,15 @@ const Cargos: NextPage<User> = (user) => {
                         else {
                             return null;
                         }
-                    }).slice(resultadosVisitados, (resultadosVisitados + numResultados)).map((cargo) => {
+                    }).slice(resultadosVisitados, (resultadosVisitados + numResultados)).map((especialidade) => {
                         return (
-                            <div className="row list" key={cargo.id}>
-                                <p className="justify">{cargo.descricao}</p>
-                                <p className="justify">{cargo.concurso.orgao.sigla}</p>
-                                <p className="justify">{cargo.escolaridade.descricao}</p>
+                            <div className="row list" key={especialidade.id}>
+                                <p className="justify">{especialidade.concurso.orgao.sigla} - {especialidade.concurso.ano}</p>
+                                <p className="justify">{especialidade.cargo.descricao}</p>
+                                <p className="justify">{especialidade.descricao}</p>
                                 <p className="justify">
-                                    <Link href={`/cargos/add/${cargo.id}`}><p className='link link-list'> Editar </p></Link> | 
-                                    <p className='link link-list' onClick={() => handleDelete(cargo.id)}> Excluir </p>
+                                    <Link href={`/cargos/add/${especialidade.id}`}><p className='link link-list'> Editar </p></Link> | 
+                                    <p className='link link-list' onClick={() => handleDelete(especialidade.id)}> Excluir </p>
                                 </p>
                             </div>
                         )
@@ -205,4 +206,4 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
 }
 
-export default Cargos;
+export default Especialidades;
