@@ -119,7 +119,7 @@ const CargosEdit: NextPage<User> = (user) => {
 
             <DashboardStyle>
 
-                <h3>Cadastrar Cargo</h3>
+                <h3>Editar Cargo</h3>
 
                 <Form>
 

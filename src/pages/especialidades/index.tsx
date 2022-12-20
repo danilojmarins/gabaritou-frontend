@@ -21,7 +21,7 @@ const Especialidades: NextPage<User> = (user) => {
 
     const [especialidades, setEspecialidades] = useState<Especialidade[]>([]);
     const [termoPesquisa, setTermoPesquisa] = useState<string>('');
-    const [numResultados, setNumResultados] = useState<number>(10);
+    const [numResultados, setNumResultados] = useState<number>(5);
 
     const [success, setSuccess] = useState(false);
     const [deleted, setDeleted] = useState<ConcursoCargo>();
@@ -78,7 +78,7 @@ const Especialidades: NextPage<User> = (user) => {
     return (
         <>
             <Head>
-                <title>Gabaritou TI - Cargos de Concursos</title>
+                <title>Gabaritou TI - Especialidades</title>
                 <meta name="description" content="Questões de concursos de TI." />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
@@ -91,7 +91,7 @@ const Especialidades: NextPage<User> = (user) => {
 
             <BancasStyle>
                 <div className="title">
-                    <h2>Listagem de Cargos</h2>
+                    <h2>Listagem de Especialidades</h2>
                 </div>
 
                 <PesquisaSimples
@@ -131,7 +131,7 @@ const Especialidades: NextPage<User> = (user) => {
                                 <p className="justify">{especialidade.cargo.descricao}</p>
                                 <p className="justify">{especialidade.descricao}</p>
                                 <p className="justify">
-                                    <Link href={`/cargos/add/${especialidade.id}`}><p className='link link-list'> Editar </p></Link> | 
+                                    <Link href={`/especialidades/add/${especialidade.id}`}><p className='link link-list'> Editar </p></Link> | 
                                     <p className='link link-list' onClick={() => handleDelete(especialidade.id)}> Excluir </p>
                                 </p>
                             </div>
