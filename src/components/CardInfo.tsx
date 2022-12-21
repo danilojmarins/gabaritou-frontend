@@ -9,11 +9,13 @@ import { Orgao } from '../types/Orgao';
 import { Disciplina } from '../types/Disciplina';
 import { api } from '../services/api';
 import { Concurso } from '../types/Concurso';
+import { Prova } from '../types/Prova';
 
 interface CardInfoProps {
     disciplina: Disciplina | null;
     bancaOrgao: Banca | Orgao | null;
     concurso: Concurso | null;
+    prova: Prova | null;
     user: User;
     page: string;
     getDeleted: (deleted: any) => void;
@@ -22,7 +24,7 @@ interface CardInfoProps {
 
 const CardInfo: FC<CardInfoProps> = (props) => {
 
-    const { disciplina, bancaOrgao, concurso, user, page, getDeleted, getSuccess } = props;
+    const { disciplina, bancaOrgao, concurso, prova, user, page, getDeleted, getSuccess } = props;
 
     const handleDelete = async (id: number | undefined) => {
         if (page === 'orgaos') {
@@ -146,6 +148,37 @@ const CardInfo: FC<CardInfoProps> = (props) => {
                 <div className="row last">
                     <p className='link'>Provas Cadastradas:</p>
                     <p className='link'>Questões disponibilizadas:</p>
+                </div>
+            </CardInfoStyle>
+        )
+    }
+
+    else if (page === 'provas') {
+        return (
+            <CardInfoStyle>
+                <div className="head">
+                    <Link href={`/provas/detalhes/${prova?.id}`}>
+                        <h4 className='link'>{prova?.concurso.orgao.sigla} - {prova?.concurso.banca.sigla} - {prova?.concurso.ano}</h4>
+                    </Link>
+                    <div>
+                        {(user && user.cargo_id === 3) && <Link href={`/${page}/add/${prova?.id}`}><h4 className='link option edit'><FontAwesomeIcon className='icon' icon={faPenToSquare} />Editar</h4></Link>}
+                        {(user && user.cargo_id === 3) && <h4 className='link option delete' onClick={() => {handleDelete(prova?.id)}}><FontAwesomeIcon className='icon' icon={faTrashCan} />Excluir</h4>}
+                    </div>
+                </div>
+
+                <div className="row">
+                    <p className='link'>Concurso: {prova?.concurso.orgao.sigla}</p>
+                    <p className='link'>Ano: {prova?.concurso.ano}</p>
+                </div>
+
+                <div className="row">
+                    <p className='link'>Cargo: {prova?.cargo.descricao}</p>
+                    <p className='link'>Especialidade: {prova?.especialidade.descricao}</p>
+                </div>
+
+                <div className="row">
+                    <p className='link'>Tipo de Prova: {prova?.tipo_questao.descricao}</p>
+                    <p className='link'>Questões Disponibilizadas: </p>
                 </div>
             </CardInfoStyle>
         )

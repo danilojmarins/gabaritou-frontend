@@ -1,22 +1,27 @@
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { destroyCookie, parseCookies } from "nookies";
-import { useState } from "react";
+import React from "react";
+import { useEffect, useState } from "react";
 import Cabecalho from "../../components/Cabecalho";
+import CardInfo from "../../components/CardInfo";
 import CarregamentoWidget from "../../components/CarregamentoWidget";
 import PesquisaSimples from "../../components/PesquisaSimples";
 import ResponseWidget from "../../components/ResponseWidget";
+import { api } from "../../services/api";
 import { getApiClient } from "../../services/axios";
 import { BancasStyle } from "../../styles/pages/Bancas.style";
+import { Prova } from "../../types/Prova";
 import { User } from "../../types/User";
 
 const Provas: NextPage<User> = (user) => {
 
-    const [provas, setProvas] = useState([]);
+    const [provas, setProvas] = useState<Prova[]>();
     const [termoPesquisa, setTermoPesquisa] = useState<string>('');
     const [numResultados, setNumResultados] = useState<number>();
 
-    const [success, setSuccess] = useState(false);
+    const [success, setSuccess] = useState<boolean>(false);
+    const [deleted, setDeleted] = useState<Prova>();
 
     const getTermoPesquisa = (termoPesquisa: string) => {
         setTermoPesquisa(termoPesquisa);
@@ -24,6 +29,25 @@ const Provas: NextPage<User> = (user) => {
 
     const getNumResultados = (numResultados: number) => {
         setNumResultados(numResultados);
+    }
+
+    useEffect(() => {
+        const getProvas = async () => {
+            await api.get('/provas/get/todasProvas')
+            .then((response) => {
+                setProvas(response.data);
+            })
+        }
+
+        getProvas();
+    }, []);
+
+    const getSuccess = (success: boolean) => {
+        setSuccess(success);
+    }
+
+    const getDeleted = (deleted: Prova) => {
+        setDeleted(deleted);
     }
 
     return (
@@ -53,7 +77,22 @@ const Provas: NextPage<User> = (user) => {
                     getNumResultados={getNumResultados}
                 />
 
-                
+                {provas && provas.map((prova) => {
+                    return (
+                        <React.Fragment key={prova.id}>
+                            <CardInfo
+                                bancaOrgao={null}
+                                user={user}
+                                page={'provas'}
+                                disciplina={null}
+                                concurso={null}
+                                prova={prova}
+                                getDeleted={getDeleted}
+                                getSuccess={getSuccess}
+                            />
+                        </React.Fragment>
+                    )
+                })}
 
             </BancasStyle>
         </>

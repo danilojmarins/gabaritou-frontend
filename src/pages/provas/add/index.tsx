@@ -35,8 +35,8 @@ const ProvasAdd: NextPage<User> = (user) => {
     const [tiposEspecialidade, setTiposEspecialidade] = useState<TipoEspecialidade[]>();
 
 
-    const [concursoId, setConcursoId] = useState<string>();
-    const [cargoId, setCargoId] = useState<string>();
+    const [concursoId, setConcursoId] = useState<string>('');
+    const [cargoId, setCargoId] = useState<string>('');
     const [especialidadeId, setEspecialidadeId] = useState<string>();
     const [escolaridadeId, setEscolaridadeId] = useState<string>();
     const [tipoQuestaoId, setTipoQuestaoId] = useState<string>();
@@ -100,66 +100,84 @@ const ProvasAdd: NextPage<User> = (user) => {
     const handleCadastro = async () => {
         if (concursoId && cargoId && especialidadeId && escolaridadeId && tipoQuestaoId && tipoEspecialidadeId && alunoPremium) {
 
-            try {
-                const formData = new FormData();
+            const formDataProva = new FormData();
+            const formDataGabarito = new FormData();
+            const formDataGabaritoDefinitivo = new FormData();
 
-                if (prova)
-                formData.append('prova', prova);
+            if (prova)
+            formDataProva.append('prova', prova);
 
-                if (gabarito)
-                formData.append('gabarito', gabarito);
+            if (gabarito)
+            formDataGabarito.append('gabarito', gabarito);
 
-                setCarregando(true);
-                setSuccess(false);
+            if (gabaritoDefinitivo)
+            formDataGabaritoDefinitivo.append('gabarito_definitvo', gabaritoDefinitivo);
 
-                console.log(formData)
+            setCarregando(true);
+            setSuccess(false);
 
-                await axios.post('/api/concursos', formData, {
+            axios.all([
+                axios.post('/api/provas', formDataProva, {
+                    params: {
+                        cargo_id: user.cargo_id,
+                        file_name:  concursoId + cargoId + especialidadeId
+                    }
+                }),
+                axios.post('/api/gabaritos', formDataGabarito, {
                     params: {
                         cargo_id: user.cargo_id,
                         file_name: concursoId + cargoId + especialidadeId
                     }
+                }),
+                axios.post('/api/gabaritosDefinitivo', formDataGabaritoDefinitivo, {
+                    params: {
+                        cargo_id: user.cargo_id,
+                        file_name: concursoId + cargoId + especialidadeId
+                    }
+                }),
+                api.post('/provas/post/salvaProva', {
+                    concurso: concursoId,
+                    cargo: cargoId,
+                    especialidade: especialidadeId,
+                    escolaridade: escolaridadeId,
+                    tipo_questao: tipoQuestaoId,
+                    tipo_especialidade: tipoEspecialidadeId,
+                    files_url: concursoId + cargoId + especialidadeId + prova?.name.substring(prova.name.length, prova.name.lastIndexOf('.')),
+                    aluno_premium: alunoPremium
+                }, {
+                    params: {
+                        user_cargo_id: user.cargo_id
+                    }
                 })
-                .then(() => {
-                    api.post('/concursos/post/salvaConcurso', {
-                        concurso: concursoId,
-                        cargo: cargoId,
-                        especialidade: especialidadeId,
-                        escolaridade: escolaridadeId,
-                        tipo_questao: tipoQuestaoId,
-                        prova_url: concursoId + cargoId + especialidadeId + prova?.name.substring(prova.name.length, prova.name.lastIndexOf('.')),
-                        aluno_premium: alunoPremium
-                    }, {
-                        params: {
-                            user_cargo_id: user.cargo_id
-                        }
-                    })
-                    .then(() => {
-                        setConcursoId('');
-                        setCargoId('');
-                        setEspecialidadeId('');
-                        setEscolaridadeId('');
-                        setTipoQuestaoId('');
-                        setTipoEspecialidadeId('');
+            ])
+            .then(() => {
+                setConcursoId('');
+                setCargoId('');
+                setEspecialidadeId('');
+                setEscolaridadeId('');
+                setTipoQuestaoId('');
+                setTipoEspecialidadeId('');
 
-                        setSuccess(true);
-                        setCadastroError(null);
+                setSuccess(true);
+                setCadastroError(null);
 
-                        const edital: any = document.getElementById('edital-input');
+                const prova: any = document.getElementById('prova-input');
+                const gabarito: any = document.getElementById('gabarito-input');
+                const gabaritoDefinitivo: any = document.getElementById('gabarito-definitivo-input');
 
-                        edital.value = '';
-                        setProva(null);
-                        setGabarito(null);
-                        setGabaritoDefinitivo(null);
-                    })
-                    .catch(() => {
-                        setCadastroError('Erro ao cadastrar Prova.');
-                    })
-                })
-                setCarregando(false);
-            } catch (error: any) {
-                setCadastroError('Erro ao Cadastrar Prova');
-            }
+                prova.value = '';
+                gabarito.value = '';
+                gabaritoDefinitivo.value = '';
+
+                setProva(null);
+                setGabarito(null);
+                setGabaritoDefinitivo(null);
+            })
+            .catch(() => {
+                setCadastroError('Erro ao cadastrar Prova.');
+            })
+
+            setCarregando(false);
         }
     }
 
@@ -197,7 +215,7 @@ const ProvasAdd: NextPage<User> = (user) => {
 
             <DashboardStyle>
 
-                <h3>Cadastrar Concurso</h3>
+                <h3>Cadastrar Prova</h3>
 
                 <Form>
                     <Label>Concurso</Label>
@@ -217,6 +235,7 @@ const ProvasAdd: NextPage<User> = (user) => {
                     <Select onChange={(e) => setCargoId(e.target.value)}>
                         <option>Selecione um Cargo</option>
                         {cargos && cargos.map((cargo) => {
+                            if (parseInt(concursoId) === cargo.concurso.id)
                             return <option
                                         value={cargo.id}
                                         key={cargo.id}
@@ -230,6 +249,7 @@ const ProvasAdd: NextPage<User> = (user) => {
                     <Select onChange={(e) => setEspecialidadeId(e.target.value)}>
                         <option>Selecione uma Especialidade</option>
                         {especialidades && especialidades.map((especialidade) => {
+                            if (parseInt(cargoId) === especialidade.cargo.id)
                             return <option
                                         value={especialidade.id}
                                         key={especialidade.id} 
@@ -253,7 +273,7 @@ const ProvasAdd: NextPage<User> = (user) => {
                     </Select>
 
                     <Label>Tipo de Questão</Label>
-                    <Select onChange={(e) => setEscolaridadeId(e.target.value)}>
+                    <Select onChange={(e) => setTipoQuestaoId(e.target.value)}>
                         <option>Selecione o Tipo da Questão</option>
                         {tiposQuestao && tiposQuestao.map((tipo) => {
                             return <option
@@ -266,7 +286,7 @@ const ProvasAdd: NextPage<User> = (user) => {
                     </Select>
 
                     <Label>Tipo de Especialidade</Label>
-                    <Select onChange={(e) => setEscolaridadeId(e.target.value)}>
+                    <Select onChange={(e) => setTipoEspecialidadeId(e.target.value)}>
                         <option>Selecione o Tipo de Especialidade</option>
                         {tiposEspecialidade && tiposEspecialidade.map((tipo) => {
                             return <option
@@ -279,13 +299,13 @@ const ProvasAdd: NextPage<User> = (user) => {
                     </Select>
 
                     <Label>Prova</Label>
-                    <Input type='file' id="edital-input" onChange={handleProvaChange}></Input>
+                    <Input type='file' id="prova-input" onChange={handleProvaChange}></Input>
 
                     <Label>Gabarito</Label>
-                    <Input type='file' id="edital-input" onChange={handleGabaritoChange}></Input>
+                    <Input type='file' id="gabarito-input" onChange={handleGabaritoChange}></Input>
 
                     <Label>Gabarito Definitivo</Label>
-                    <Input type='file' id="edital-input" onChange={handleGabaritoDefinitivoChange}></Input>
+                    <Input type='file' id="gabarito-definitivo-input" onChange={handleGabaritoDefinitivoChange}></Input>
 
                     <Label>Somente Alunos Premium</Label>
                     <Input type='checkbox' onChange={() => setAlunoPremium(!alunoPremium)}></Input>
